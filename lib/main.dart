@@ -2,7 +2,7 @@ import 'package:attendance/providers/login_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'router/router.dart' as RouterGen;
@@ -35,10 +35,11 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xFFFBFCFD),
           bottomAppBarColor: Color(0xFFBD202E),
           scaffoldBackgroundColor: Color(0xFFFBFCFD),
+          fontFamily: GoogleFonts.poppins().fontFamily,
           appBarTheme: AppBarTheme(
-            titleTextStyle: fontWhite18,
+            titleTextStyle: poppinsWhite18w600,
             systemOverlayStyle: SystemUiOverlayStyle.dark,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: white),
             centerTitle: true,
             color: blue,
           ),
@@ -47,13 +48,13 @@ class MyApp extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 10),
               minimumSize: Size(120, 40),
               primary: blue,
-              onPrimary: white,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
               elevation: 0,
               shadowColor: Colors.transparent,
+              textStyle: poppinsWhitew500.copyWith(fontSize: 16),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
@@ -68,25 +69,26 @@ class MyApp extends StatelessWidget {
               elevation: 0,
               shadowColor: Colors.transparent,
               side: BorderSide(color: blue),
+              textStyle: poppinsBluew500.copyWith(fontSize: 16),
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
             fillColor: white,
+            contentPadding: EdgeInsets.all(12),
             labelStyle: TextStyle(
               fontWeight: FontWeight.w400,
-              color: Colors.black45,
+              color: Colors.grey[400],
+            ),
+            floatingLabelStyle: TextStyle(
+              fontWeight: FontWeight.w400,
+              color: blue,
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-            focusColor: blue,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey[300]!,
-              ),
+              borderSide: BorderSide(color: blue),
             ),
             disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey[300]!,
-              ),
+              borderSide: BorderSide(color: blue),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: blue),
@@ -98,7 +100,7 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide(color: red),
             ),
           ),
-          hintColor: Colors.black45,
+          hintColor: Colors.grey[400],
         ),
         onGenerateRoute: RouterGen.Router.generateRoute,
         debugShowCheckedModeBanner: false,
