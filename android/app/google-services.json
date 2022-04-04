@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "839385234241",
+    "project_id": "sdn-sukakerta-03",
+    "storage_bucket": "sdn-sukakerta-03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839385234241:android:411fe9de415828baa2ffc0",
+        "android_client_info": {
+          "package_name": "com.sukakerta.attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "839385234241-2h3nlvtsoc8e51ie83rcd72tql6uig16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHjTvl7UiQaBok7BnwSpZ13o676Pj7fNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "839385234241-2h3nlvtsoc8e51ie83rcd72tql6uig16.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
