@@ -9,7 +9,7 @@ class Router {
       case rootRoute:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => LoginPage(),
+          builder: (_) => HomePage(),
         );
       case homeRoute:
         return MaterialPageRoute(
