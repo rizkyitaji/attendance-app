@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/assets.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isAbsen = false;
+  bool _isAbsen = false;
 
-  void clickAbsen() {
+  void _clickAbsen() {
     setState(() {
-      isAbsen = !isAbsen;
+      _isAbsen = !_isAbsen;
     });
   }
 
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   "PILIH ABSEN",
-                  style: mediumBlue20,
+                  style: poppinsBluew500,
                 ),
                 SizedBox(
                   height: 40,
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        clickAbsen();
+                        Navigator.pushNamed(context, absentInOutRoute);
                       },
                       child: Text("MASUK"),
                       style: ElevatedButton.styleFrom(
@@ -56,7 +57,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, absentInOutRoute);
+                      },
                       child: Text("PULANG"),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(
@@ -100,11 +103,15 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       "Marvin McKinney",
-                      style: semiBold15,
+                      style: poppinsBlackw600.copyWith(
+                        fontSize: 15,
+                      ),
                     ),
                     Text(
                       "319.555.0115",
-                      style: semiBold10,
+                      style: poppinsBlackw600.copyWith(
+                        fontSize: 10,
+                      ),
                     ),
                   ],
                 ),
@@ -116,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Icon(
               Icons.check_circle_outline_rounded,
-              color: isAbsen ? blue : grey,
+              color: _isAbsen ? blue : grey,
               size: 150,
             ),
             SizedBox(
@@ -126,12 +133,18 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  DateFormat.yMMMMd().format(DateTime.now()),
-                  style: regular15,
+                  DateFormat.yMMMMd().format(
+                    DateTime.now(),
+                  ),
+                  style: poppinsBlackw400.copyWith(
+                    fontSize: 15,
+                  ),
                 ),
                 Text(
                   DateFormat.jm().format(DateTime.now()),
-                  style: regular15,
+                  style: poppinsBlackw400.copyWith(
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
@@ -145,7 +158,9 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {},
                   child: Text(
                     "IZIN",
-                    style: medium15,
+                    style: poppinsWhitew500.copyWith(
+                      fontSize: 15,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(
@@ -160,7 +175,9 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: Text(
                     "ABSEN",
-                    style: medium15,
+                    style: poppinsWhitew500.copyWith(
+                      fontSize: 15,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(
@@ -178,7 +195,9 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {},
               child: Text(
                 "DAFTAR ABSEN",
-                style: mediumBlue20,
+                style: poppinsBluew500.copyWith(
+                  fontSize: 20,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(
