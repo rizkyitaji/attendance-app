@@ -9,17 +9,17 @@ class FirebaseService {
 
   static FirebaseStorage storage = FirebaseStorage.instance;
 
-  static CollectionReference ref(Table? table) {
-    return firestore.collection(path(table));
+  static CollectionReference ref(Collection? collection) {
+    return firestore.collection(path(collection));
   }
 
-  static String path(Table? table) {
-    switch (table) {
-      case Table.Users:
+  static String path(Collection? collection) {
+    switch (collection) {
+      case Collection.Users:
         return 'Users';
-      case Table.Attendance:
+      case Collection.Attendance:
         return 'Attendance';
-      case Table.Absent:
+      case Collection.Absent:
         return 'Absent';
       default:
         return 'Teacher';
@@ -27,56 +27,56 @@ class FirebaseService {
   }
 
   static Future<Response<T>> set<T>({
-    required Table? table,
+    required Collection? collection,
     String? id,
     required dynamic data,
   }) async {
     try {
       if (id != null) {
-        await ref(table).add({}).then((value) {
+        await ref(collection).add({}).then((value) {
           data.id = value.id;
           value.set(data.toMap());
         });
       } else {
-        await ref(table).doc(id).set(data.toMap());
+        await ref(collection).doc(id).set(data.toMap());
       }
       return Response(
         value: data,
         message: 'Data berhasil ditambahkan',
       );
     } catch (e) {
-      return Response(message: '$e');
+      throw e;
     }
   }
 
   static Future<Response<T>> get<T>({
-    required Table? table,
+    required Collection? collection,
     String? id,
     required dynamic data,
   }) async {
     try {
       dynamic list;
       if (id != null) {
-        list = await ref(table).doc(id).get();
+        list = await ref(collection).doc(id).get();
       } else {
-        var query = await ref(table).get();
+        var query = await ref(collection).get();
         list = query.docs.map((e) => data.fromSnapshot(e)).toList();
       }
       return Response(value: list);
     } catch (e) {
-      return Response(message: '$e');
+      throw e;
     }
   }
 
   static Future<Response<T>> delete<T>({
-    required Table? table,
+    required Collection? collection,
     required String? id,
   }) async {
     try {
-      await ref(table).doc(id).delete();
+      await ref(collection).doc(id).delete();
       return Response(message: 'Data berhasil dihapus');
     } catch (e) {
-      return Response(message: '$e');
+      throw e;
     }
   }
 
@@ -94,7 +94,7 @@ class FirebaseService {
       });
       return Response(value: url);
     } catch (e) {
-      return Response(message: '$e');
+      throw e;
     }
   }
 }

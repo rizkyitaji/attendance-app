@@ -1,4 +1,4 @@
-import 'package:attendance/providers/login_provider.dart';
+import 'package:attendance/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     );
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
         theme: ThemeData(

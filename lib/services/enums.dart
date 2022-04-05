@@ -1,4 +1,4 @@
-enum Table {
+enum Collection {
   Users,
   Attendance,
   Absent,
