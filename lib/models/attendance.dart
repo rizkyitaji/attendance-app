@@ -2,21 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Attendance {
   String? id, name;
-  DateTime? dateIn, dateOut;
+  DateTime? date;
 
   Attendance.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     name = snapshot['name'];
-    dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['dateIn']);
-    dateOut = DateTime.fromMillisecondsSinceEpoch(snapshot['dateOut']);
+    date = DateTime.fromMillisecondsSinceEpoch(snapshot['date']);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'dateIn': dateIn?.millisecondsSinceEpoch,
-      'dateOut': dateOut?.millisecondsSinceEpoch,
+      'date': date?.millisecondsSinceEpoch,
     };
   }
 }
