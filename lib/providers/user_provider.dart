@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
+  User? _user;
+  User? get user => _user;
+
   Future<String> login(String id, String password) async {
     try {
       final response = await FirebaseService.get<DocumentSnapshot>(
@@ -13,6 +16,7 @@ class UserProvider extends ChangeNotifier {
         return 'NIGN Anda salah atau tidak terdaftar';
       } else {
         if (password.compareTo(response.value!.get('password')) == 0) {
+          _user = User.fromSnapshot(response.value!);
           return 'Selamat Datang';
         } else {
           return 'Password Anda salah atau tidak terdaftar';

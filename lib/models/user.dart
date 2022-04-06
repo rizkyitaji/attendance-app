@@ -8,14 +8,14 @@ class User {
   User.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     password = snapshot['password'];
-    level = snapshot['level'] == 'User' ? Level.User : Level.Admin;
+    level = snapshot['level'] == 'user' ? Level.User : Level.Admin;
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'password': password,
-      'level': level == Level.User ? 'User' : 'Admin',
+      'level': level == Level.User ? 'user' : 'admin',
     };
   }
 }
