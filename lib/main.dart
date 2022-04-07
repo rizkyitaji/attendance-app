@@ -1,10 +1,11 @@
-import 'package:attendance/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'providers/attendance_provider.dart';
+import 'providers/user_provider.dart';
 import 'router/router.dart' as RouterGen;
 import 'services/themes.dart';
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => AttendanceProvider()),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color(0xFFFBFCFD),
           fontFamily: GoogleFonts.poppins().fontFamily,
           appBarTheme: AppBarTheme(
-            titleTextStyle: poppinsWhite18w600,
+            titleTextStyle: poppinsWhitew600.copyWith(fontSize: 18),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             iconTheme: IconThemeData(color: white),
             centerTitle: true,

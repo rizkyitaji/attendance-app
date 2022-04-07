@@ -19,10 +19,8 @@ class FirebaseService {
         return 'Users';
       case Collection.Attendance:
         return 'Attendance';
-      case Collection.Absent:
-        return 'Absent';
       default:
-        return 'Teacher';
+        return 'Absent';
     }
   }
 
@@ -80,8 +78,7 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<String>> uploadImage(
-      PickedFile file, String name) async {
+  static Future<Response<String>> uploadImage(XFile file, String name) async {
     try {
       var imageFile = await file.readAsBytes();
 

@@ -1,4 +1,5 @@
 const String rootRoute = '/';
+const String loginRoute = '/login';
 const String homeRoute = '/home';
 const String attendanceRoute = '/attendance';
 const String absentRoute = '/absent';

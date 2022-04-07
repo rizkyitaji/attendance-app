@@ -6,9 +6,8 @@ Color white = Colors.white;
 Color black = Colors.black;
 Color blue = Color(0xFF315FB8);
 
-TextStyle poppinsWhite18w600 = GoogleFonts.poppins(
+TextStyle poppinsWhitew600 = GoogleFonts.poppins(
   fontWeight: FontWeight.w600,
-  fontSize: 18,
   color: white,
 );
 
@@ -27,6 +26,11 @@ TextStyle poppinsBlackw400 = GoogleFonts.poppins(
   color: black,
 );
 
+TextStyle poppinsWhitew300 = GoogleFonts.poppins(
+  fontWeight: FontWeight.w300,
+  color: white,
+);
+
 TextStyle poppinsWhitew500 = GoogleFonts.poppins(
   fontWeight: FontWeight.w500,
   color: white,
@@ -36,3 +40,6 @@ TextStyle poppinsBluew500 = GoogleFonts.poppins(
   fontWeight: FontWeight.w500,
   color: blue,
 );
+
+double width(BuildContext context) => MediaQuery.of(context).size.width;
+double height(BuildContext context) => MediaQuery.of(context).size.height;
