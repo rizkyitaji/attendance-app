@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     final prov = Provider.of<UserProvider>(context, listen: false);
+
     if (_formKey.currentState!.validate()) {
       showLoadingDialog(context);
       try {
@@ -33,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
           _cNign.text.trim(),
           _cPassword.text.trim(),
         );
+
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, result);

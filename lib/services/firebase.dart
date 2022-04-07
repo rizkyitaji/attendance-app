@@ -80,8 +80,7 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<String>> uploadImage(
-      PickedFile file, String name) async {
+  static Future<Response<String>> uploadImage(XFile file, String name) async {
     try {
       var imageFile = await file.readAsBytes();
 

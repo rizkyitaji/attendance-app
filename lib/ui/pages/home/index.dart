@@ -1,10 +1,13 @@
 import 'dart:ffi';
-
+import 'package:attendance/providers/user_provider.dart';
+import 'package:attendance/services/firebase.dart';
 import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/assets.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ImagePicker _picker = ImagePicker();
+
   bool _isAbsen = false;
 
   void _clickAbsen() {
@@ -24,6 +29,7 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
+          final prov = Provider.of<UserProvider>(context);
           return Container(
             padding: EdgeInsets.only(
               left: 35,
@@ -45,8 +51,13 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, absentInOutRoute);
+                      onPressed: () async {
+                        final name = prov.user?.name;
+                        final nign = prov.user?.id;
+                        final XFile photo = await _picker.pickImage(
+                            source: ImageSource.camera) as XFile;
+                        FirebaseService.uploadImage(
+                            photo, (name! + "_" + nign!));
                       },
                       child: Text("MASUK"),
                       style: ElevatedButton.styleFrom(
@@ -57,8 +68,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, absentInOutRoute);
+                      onPressed: () async {
+                        XFile photo = await _picker.pickImage(
+                            source: ImageSource.camera) as XFile;
+                        FirebaseService.uploadImage(photo, "Cobadulu2");
                       },
                       child: Text("PULANG"),
                       style: ElevatedButton.styleFrom(
@@ -85,6 +98,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final prov = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
           title: Image.asset(
@@ -102,13 +116,13 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Marvin McKinney",
+                      "${prov.user?.name}".toUpperCase(),
                       style: poppinsBlackw600.copyWith(
                         fontSize: 15,
                       ),
                     ),
                     Text(
-                      "319.555.0115",
+                      "${prov.user?.id}",
                       style: poppinsBlackw600.copyWith(
                         fontSize: 10,
                       ),
