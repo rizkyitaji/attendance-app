@@ -50,7 +50,7 @@ class FirebaseService {
   static Future<Response<T>> get<T>({
     required Collection? collection,
     String? id,
-    required dynamic data,
+    dynamic data,
   }) async {
     try {
       dynamic list;

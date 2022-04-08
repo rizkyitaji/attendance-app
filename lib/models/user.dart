@@ -2,12 +2,13 @@ import 'package:attendance/services/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  String? id, password;
+  String? id, password, name;
   Level? level;
 
   User.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     password = snapshot['password'];
+    name = snapshot['name'];
     level = snapshot['level'] == 'user' ? Level.User : Level.Admin;
   }
 
@@ -15,6 +16,7 @@ class User {
     return {
       'id': id,
       'password': password,
+      'name': name,
       'level': level == Level.User ? 'user' : 'admin',
     };
   }

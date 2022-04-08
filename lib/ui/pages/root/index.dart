@@ -1,20 +1,20 @@
-import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/assets.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RootPage extends StatelessWidget {
   Future<void> _navigate(BuildContext context) async {
-    final prov = Provider.of<UserProvider>(context, listen: false);
-    final user = prov.user;
-    if (user != null) {
-      Navigator.pushReplacementNamed(context, homeRoute);
-    } else {
-      Future.delayed(Duration(seconds: 2))
-          .then((_) => Navigator.pushReplacementNamed(context, loginRoute));
-    }
+    final pref = await SharedPreferences.getInstance();
+    final isLogin = pref.getString('user') ?? '';
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      if (isLogin.isNotEmpty) {
+        Navigator.pushReplacementNamed(context, homeRoute);
+      } else {
+        Navigator.pushReplacementNamed(context, loginRoute);
+      }
+    });
   }
 
   @override

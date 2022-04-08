@@ -5,12 +5,12 @@ Color red = Colors.red;
 Color white = Colors.white;
 Color black = Colors.black;
 Color blue = Color(0xFF315FB8);
+Color grey = Color(0xFFBDC3C7);
 
 TextStyle poppinsWhitew600 = GoogleFonts.poppins(
   fontWeight: FontWeight.w600,
   color: white,
 );
-
 TextStyle poppinsBlackw600 = GoogleFonts.poppins(
   fontWeight: FontWeight.w600,
   color: black,

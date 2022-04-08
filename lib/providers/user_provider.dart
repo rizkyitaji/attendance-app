@@ -1,27 +1,58 @@
+import 'package:attendance/models/response.dart';
 import 'package:attendance/models/user.dart';
 import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
   User? _user;
   User? get user => _user;
 
-  Future<String> login(String id, String password) async {
+  void resetState() {
+    _user = null;
+    notifyListeners();
+  }
+
+  Future<Response<DocumentSnapshot>> getUser(String id) async {
     try {
       final response = await FirebaseService.get<DocumentSnapshot>(
-          collection: Collection.Users, data: User, id: id);
+          collection: Collection.Users, id: id);
+      if (response.value != null) {
+        _user = User.fromSnapshot(response.value!);
+        return response;
+      }
+      return Response(message: 'Gagal mendapatkan data user');
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<String> login(String id, String password) async {
+    final pref = await SharedPreferences.getInstance();
+    try {
+      final response = await getUser(id);
       if (!response.value!.exists) {
         return 'NIGN Anda salah atau tidak terdaftar';
       } else {
         if (password.compareTo(response.value!.get('password')) == 0) {
-          _user = User.fromSnapshot(response.value!);
+          pref.setString('user', _user?.id ?? '');
           return 'Selamat Datang';
         } else {
           return 'Password Anda salah atau tidak terdaftar';
         }
       }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      final pref = await SharedPreferences.getInstance();
+      pref.clear();
+      resetState();
     } catch (e) {
       throw e;
     }

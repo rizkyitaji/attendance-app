@@ -1,15 +1,49 @@
+import 'package:attendance/models/response.dart';
+import 'package:attendance/models/user.dart';
+import 'package:attendance/providers/user_provider.dart';
+import 'package:attendance/services/enums.dart';
+import 'package:attendance/ui/pages/home/admin.dart';
+import 'package:attendance/ui/pages/home/user.dart';
+import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
+class HomePage extends StatelessWidget {
+  Future<Response<User>> _getUser(BuildContext context) async {
+    final prov = Provider.of<UserProvider>(context, listen: false);
+    final pref = await SharedPreferences.getInstance();
+    final id = pref.getString('user') ?? '';
+    if (prov.user == null) {
+      try {
+        await prov.getUser(id);
+        if (prov.user != null) {
+          return Response(value: prov.user);
+        }
+        return Response(message: 'Error');
+      } catch (e) {
+        showSnackBar(context, e.toString());
+        return Response(message: '$e');
+      }
+    }
+    return Response(value: prov.user);
+  }
 
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(),
+    return FutureBuilder<Response<User>>(
+      future: _getUser(context),
+      builder: (context, snapshot) {
+        final user = snapshot.data?.value;
+
+        if (user != null) {
+          if (user.level == Level.Admin) {
+            return AdminHomePage();
+          }
+          return UserHomePage();
+        }
+        return SizedBox();
+      },
     );
   }
 }
