@@ -47,18 +47,14 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<T>> get<T>({
-    required Collection? collection,
-    String? id,
-    dynamic data,
-  }) async {
+  static Future<Response<T>> get<T>(Collection collection, [String? id]) async {
     try {
       dynamic result;
       if (id != null) {
         result = await ref(collection).doc(id).get();
       } else {
         var query = await ref(collection).get();
-        result = query.docs.map((e) => data.fromSnapshot(e)).toList();
+        result = query.docs;
       }
       return Response(value: result);
     } catch (e) {

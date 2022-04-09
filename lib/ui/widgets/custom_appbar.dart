@@ -1,5 +1,6 @@
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +18,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   void _logout(BuildContext context) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
+    showLoadingDialog(context);
     try {
-      await prov.logout(context).then((_) {
-        Navigator.pushReplacementNamed(context, loginRoute);
+      await Future.delayed(Duration(milliseconds: 500)).then((_) async {
+        await prov.logout(context).then((_) {
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, loginRoute);
+        });
       });
     } catch (e) {
+      Navigator.pop(context);
       showSnackBar(context, e.toString());
     }
   }
@@ -33,7 +39,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: EdgeInsets.symmetric(vertical: 12),
         child: Image.asset(iconLogo),
       ),
-      title: Text(title ?? ''),
+      title: Text((title ?? '').toUpperCase()),
       actions: [
         Visibility(
           visible: showLogout,

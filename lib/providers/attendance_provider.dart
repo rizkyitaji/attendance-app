@@ -28,10 +28,13 @@ class AttendanceProvider extends ChangeNotifier {
 
   Future<void> getAttendances() async {
     try {
-      final response = await FirebaseService.get<List<Attendance>>(
-          collection: Collection.Attendance, data: Attendance());
-      if (response.value != null || response.value!.isNotEmpty) {
-        _attendances = response.value;
+      final response = await FirebaseService.get<List<DocumentSnapshot>>(
+          Collection.Attendance);
+      final snapshots = response.value ?? [];
+      if (snapshots.isNotEmpty) {
+        _attendances =
+            snapshots.map((e) => Attendance.fromSnapshot(e)).toList();
+        notifyListeners();
       }
     } catch (e) {
       throw e;
@@ -41,7 +44,7 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getDailyAttendance(String id) async {
     try {
       final response = await FirebaseService.get<DocumentSnapshot>(
-          collection: Collection.Attendance, id: id);
+          Collection.Attendance, id);
       if (response.value!.exists) {
         if (response.value?.get('date_out') != null) {
           _isAttend = false;

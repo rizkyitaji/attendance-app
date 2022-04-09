@@ -18,8 +18,10 @@ class Attendance {
     name = snapshot['name'];
     nign = snapshot['nign'];
     imageUrl = snapshot['image_url'];
-    dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['date_in']);
-    dateOut = DateTime.fromMillisecondsSinceEpoch(snapshot['date_out']);
+    if (snapshot['date_in'] != null)
+      dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['date_in']);
+    if (snapshot['date_out'] != null)
+      dateOut = DateTime.fromMillisecondsSinceEpoch(snapshot['date_out']);
   }
 
   Map<String, dynamic> toMap() {
