@@ -1,20 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Attendance {
-  String? id, name;
-  DateTime? date;
+  String? id, name, nign, imageUrl;
+  DateTime? dateIn, dateOut;
+
+  Attendance({
+    this.id,
+    this.name,
+    this.nign,
+    this.imageUrl,
+    this.dateIn,
+    this.dateOut,
+  });
 
   Attendance.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     name = snapshot['name'];
-    date = DateTime.fromMillisecondsSinceEpoch(snapshot['date']);
+    nign = snapshot['nign'];
+    imageUrl = snapshot['image_url'];
+    dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['date_in']);
+    dateOut = DateTime.fromMillisecondsSinceEpoch(snapshot['date_out']);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'date': date?.millisecondsSinceEpoch,
+      'nign': nign,
+      'image_url': imageUrl,
+      'date_in': dateIn?.millisecondsSinceEpoch,
+      'date_out': dateOut?.millisecondsSinceEpoch,
     };
   }
 }

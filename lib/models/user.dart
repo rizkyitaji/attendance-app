@@ -5,6 +5,13 @@ class User {
   String? id, password, name;
   Level? level;
 
+  User({
+    this.id,
+    this.name,
+    this.password,
+    this.level,
+  });
+
   User.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     password = snapshot['password'];

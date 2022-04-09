@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _logout(BuildContext context) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
-      await prov.logout().then((_) {
+      await prov.logout(context).then((_) {
         Navigator.pushReplacementNamed(context, loginRoute);
       });
     } catch (e) {

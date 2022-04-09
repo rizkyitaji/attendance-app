@@ -1,11 +1,18 @@
+import 'package:attendance/models/attendance.dart';
+import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
+import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/themes.dart';
-import 'package:attendance/ui/pages/home/widgets/attend_option.dart';
+import 'package:attendance/services/utils.dart';
+import 'package:attendance/ui/widgets/custom_appbar.dart';
+import 'package:attendance/ui/widgets/loading_dialog.dart';
+import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/custom_appbar.dart';
+import 'widgets/attend_option.dart';
+import 'widgets/attend_success.dart';
 
 class UserHomePage extends StatefulWidget {
   @override
@@ -14,13 +21,60 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State<UserHomePage> {
   DateTime _currentDate = DateTime.now();
-  bool _isAttend = false;
 
-  void _showModal() {
-    showModalBottomSheet(
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  Future<void> _getData() async {
+    final prov = Provider.of<AttendanceProvider>(context, listen: false);
+    final prov2 = Provider.of<UserProvider>(context, listen: false);
+    final id = '${prov2.user?.name}_${_currentDate.formatddMMy()}';
+    try {
+      await prov.getDailyAttendance(id);
+      if (!mounted) return;
+    } catch (e) {
+      if (!mounted) return;
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void _showModal() async {
+    await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => AttendOptionModal(),
+    ).then((value) {
+      if (value != null) _attend(value);
+    });
+  }
+
+  void _attend(String type) async {
+    final prov = Provider.of<AttendanceProvider>(context, listen: false);
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (!mounted) return;
+      if (image != null) {
+        showLoadingDialog(context);
+        await prov.upload<Attendance>(context, image, type).then((_) {
+          Navigator.pop(context);
+          _showDialog();
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void _showDialog() async {
+    await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AttendSuccessDialog(),
     );
   }
 
@@ -28,81 +82,87 @@ class _UserHomePageState extends State<UserHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(showLogout: true),
-      body: ListView(
-        padding: EdgeInsets.all(24),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Consumer<UserProvider>(
-                builder: (context, value, _) {
-                  final user = value.user;
+      body: RefreshIndicator(
+        onRefresh: _getData,
+        child: Consumer2<UserProvider, AttendanceProvider>(
+          builder: (context, userProv, attendProv, _) {
+            final user = userProv.user;
+            final isAttend = attendProv.isAttend;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user?.name ?? '-'.toUpperCase(),
-                        style: poppinsBlackw600.copyWith(fontSize: 16),
-                      ),
-                      Text(
-                        user?.id ?? '-',
-                        style: poppinsBlackw600.copyWith(fontSize: 12),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              InkWell(
-                onTap: () {},
-                child: Icon(Icons.settings),
-              )
-            ],
-          ),
-          SizedBox(height: 80),
-          Icon(
-            Icons.check_circle_outline_rounded,
-            color: _isAttend ? blue : grey,
-            size: 150,
-          ),
-          SizedBox(height: 80),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                DateFormat.yMMMMd().format(_currentDate),
-                style: poppinsBlackw400.copyWith(fontSize: 15),
-              ),
-              Text(
-                DateFormat.jm().format(_currentDate),
-                style: poppinsBlackw400.copyWith(fontSize: 15),
-              ),
-            ],
-          ),
-          SizedBox(height: 40),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("IZIN"),
+            return ListView(
+              padding: EdgeInsets.all(24),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          (user?.name ?? '-').capitalize(),
+                          style: poppinsBlackw600.copyWith(fontSize: 16),
+                        ),
+                        Text(
+                          user?.id ?? '-',
+                          style: poppinsBlackw600.copyWith(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pushNamed(context, settingRoute),
+                      child: Icon(Icons.settings),
+                    )
+                  ],
                 ),
-              ),
-              SizedBox(width: 32),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _showModal,
-                  child: Text("ABSEN"),
+                SizedBox(height: 80),
+                Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: isAttend ? blue : grey,
+                  size: 150,
                 ),
-              )
-            ],
-          ),
-          SizedBox(height: 40),
-          OutlinedButton(
-            onPressed: () {},
-            child: Text("DAFTAR ABSEN"),
-          ),
-        ],
+                SizedBox(height: 80),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _currentDate.formatMMMMddy(),
+                      style: poppinsBlackw400.copyWith(fontSize: 15),
+                    ),
+                    Text(
+                      _currentDate.formathhmm(),
+                      style: poppinsBlackw400.copyWith(fontSize: 15),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 40),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            Navigator.pushNamed(context, absentRoute),
+                        child: Text("IZIN"),
+                      ),
+                    ),
+                    SizedBox(width: 32),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _showModal,
+                        child: Text("ABSEN"),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 40),
+                OutlinedButton(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, attendanceRoute),
+                  child: Text("DAFTAR ABSEN"),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

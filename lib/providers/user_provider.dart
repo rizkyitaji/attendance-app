@@ -1,9 +1,11 @@
 import 'package:attendance/models/response.dart';
 import 'package:attendance/models/user.dart';
+import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -30,13 +32,13 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<String> login(String id, String password) async {
-    final pref = await SharedPreferences.getInstance();
     try {
       final response = await getUser(id);
       if (!response.value!.exists) {
         return 'NIGN Anda salah atau tidak terdaftar';
       } else {
         if (password.compareTo(response.value!.get('password')) == 0) {
+          final pref = await SharedPreferences.getInstance();
           pref.setString('user', _user?.id ?? '');
           return 'Selamat Datang';
         } else {
@@ -48,10 +50,14 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     try {
       final pref = await SharedPreferences.getInstance();
       pref.clear();
+
+      final attendanceProv =
+          Provider.of<AttendanceProvider>(context, listen: false);
+      attendanceProv.resetState();
       resetState();
     } catch (e) {
       throw e;

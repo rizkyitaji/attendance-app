@@ -31,12 +31,12 @@ class FirebaseService {
   }) async {
     try {
       if (id != null) {
-        await ref(collection).add({}).then((value) {
+        await ref(collection).doc(id).set(data.toMap());
+      } else {
+        await ref(collection).add(data.toMap()).then((value) {
           data.id = value.id;
           value.set(data.toMap());
         });
-      } else {
-        await ref(collection).doc(id).set(data.toMap());
       }
       return Response(
         value: data,
@@ -53,14 +53,14 @@ class FirebaseService {
     dynamic data,
   }) async {
     try {
-      dynamic list;
+      dynamic result;
       if (id != null) {
-        list = await ref(collection).doc(id).get();
+        result = await ref(collection).doc(id).get();
       } else {
         var query = await ref(collection).get();
-        list = query.docs.map((e) => data.fromSnapshot(e)).toList();
+        result = query.docs.map((e) => data.fromSnapshot(e)).toList();
       }
-      return Response(value: list);
+      return Response(value: result);
     } catch (e) {
       throw e;
     }
@@ -78,7 +78,7 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<String>> uploadImage(XFile file, String name) async {
+  static Future<String> uploadImage(XFile file, String name) async {
     try {
       var imageFile = await file.readAsBytes();
 
@@ -89,7 +89,7 @@ class FirebaseService {
       String url = await task.then((value) {
         return value.ref.getDownloadURL();
       });
-      return Response(value: url);
+      return url;
     } catch (e) {
       throw e;
     }
