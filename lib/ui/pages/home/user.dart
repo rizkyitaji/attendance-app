@@ -58,7 +58,7 @@ class _UserHomePageState extends State<UserHomePage> {
       if (!mounted) return;
       if (image != null) {
         showLoadingDialog(context);
-        await prov.upload<Attendance>(context, image, type).then((_) {
+        await prov.attend<Attendance>(context, image, type).then((_) {
           Navigator.pop(context);
           _showDialog();
         });
@@ -155,8 +155,8 @@ class _UserHomePageState extends State<UserHomePage> {
                 ),
                 SizedBox(height: 40),
                 OutlinedButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, attendanceRoute),
+                  onPressed: () => Navigator.pushNamed(context, attendanceRoute,
+                      arguments: user),
                   child: Text("DAFTAR ABSEN"),
                 ),
               ],

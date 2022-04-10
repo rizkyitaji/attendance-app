@@ -13,6 +13,23 @@ class Attendance {
     this.dateOut,
   });
 
+  Attendance copyWith({
+    String? id,
+    String? name,
+    String? nign,
+    String? imageUrl,
+    DateTime? dateIn,
+    DateTime? dateOut,
+  }) =>
+      Attendance(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        nign: nign ?? this.nign,
+        imageUrl: imageUrl ?? this.imageUrl,
+        dateIn: dateIn ?? this.dateIn,
+        dateOut: dateOut ?? this.dateOut,
+      );
+
   Attendance.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     name = snapshot['name'];

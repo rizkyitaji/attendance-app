@@ -20,16 +20,19 @@ class AttendanceProvider extends ChangeNotifier {
   List<Attendance>? _attendances;
   List<Attendance>? get attendances => _attendances;
 
+  Attendance? _attendance;
+  Attendance? get attendance => _attendance;
+
   void resetState() {
     _isAttend = false;
     _attendances = null;
     notifyListeners();
   }
 
-  Future<void> getAttendances() async {
+  Future<void> getAttendances(int limit) async {
     try {
       final response = await FirebaseService.get<List<DocumentSnapshot>>(
-          Collection.Attendance);
+          collection: Collection.Attendance, limit: limit);
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _attendances =
@@ -44,20 +47,22 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getDailyAttendance(String id) async {
     try {
       final response = await FirebaseService.get<DocumentSnapshot>(
-          Collection.Attendance, id);
+          collection: Collection.Attendance, id: id);
       if (response.value!.exists) {
+        _attendance = Attendance.fromSnapshot(response.value!);
         if (response.value?.get('date_out') != null) {
           _isAttend = false;
         }
         _isAttend = true;
       }
+      _isAttend = false;
       notifyListeners();
     } catch (e) {
       throw e;
     }
   }
 
-  Future<Response<T>> upload<T>(
+  Future<Response<T>> attend<T>(
     BuildContext context,
     XFile file,
     String type,
@@ -77,11 +82,17 @@ class AttendanceProvider extends ChangeNotifier {
           name: userName,
           nign: prov.user?.id,
           imageUrl: imageUrl,
-          dateIn: type == 'in' ? currentDate : null,
+          dateIn: type == 'in' ? currentDate : _attendance?.dateIn,
           dateOut: type == 'out' ? currentDate : null,
         ),
       );
-      _isAttend = true;
+      if (type == 'in') {
+        _attendance = Attendance(dateIn: currentDate);
+        _isAttend = true;
+      } else {
+        _attendance = Attendance(dateOut: currentDate);
+        _isAttend = false;
+      }
       notifyListeners();
       return response;
     } catch (e) {

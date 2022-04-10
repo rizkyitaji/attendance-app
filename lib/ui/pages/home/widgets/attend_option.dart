@@ -1,5 +1,6 @@
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/services/themes.dart';
+import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,8 @@ class AttendOptionModal extends StatelessWidget {
       child: Consumer<AttendanceProvider>(
         builder: (context, value, _) {
           final isAttend = value.isAttend;
+          final date = value.attendance?.dateIn;
+          final currentDate = DateTime.now();
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -39,7 +42,21 @@ class AttendOptionModal extends StatelessWidget {
               SizedBox(height: 16),
               Divider(height: 0),
               ListTile(
-                onTap: () => !isAttend ? Navigator.pop(context, 'in') : {},
+                onTap: () {
+                  if (!isAttend) {
+                    if (date != null &&
+                        currentDate.difference(date).inDays == 0) {
+                      Navigator.pop(context);
+                      showSnackBar(
+                          context, 'Anda dapat melakukan absen lagi besok');
+                    } else {
+                      Navigator.pop(context, 'in');
+                    }
+                  } else {
+                    Navigator.pop(context);
+                    showSnackBar(context, 'Anda sudah melakukan absen masuk');
+                  }
+                },
                 minLeadingWidth: 12,
                 leading: Icon(Icons.inventory_rounded),
                 title: Text(
@@ -49,7 +66,20 @@ class AttendOptionModal extends StatelessWidget {
               ),
               Divider(height: 0),
               ListTile(
-                onTap: () => isAttend ? Navigator.pop(context, 'out') : {},
+                onTap: () {
+                  if (isAttend) {
+                    Navigator.pop(context, 'out');
+                  } else {
+                    Navigator.pop(context);
+                    if (date != null &&
+                        currentDate.difference(date).inDays == 0) {
+                      showSnackBar(
+                          context, 'Anda dapat melakukan absen lagi besok');
+                    } else {
+                      showSnackBar(context, 'Anda belum melakukan absen masuk');
+                    }
+                  }
+                },
                 minLeadingWidth: 12,
                 leading: Icon(Icons.inventory_rounded),
                 title: Text(

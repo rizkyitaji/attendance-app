@@ -47,13 +47,17 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<T>> get<T>(Collection collection, [String? id]) async {
+  static Future<Response<T>> get<T>({
+    required Collection collection,
+    int limit = 10,
+    String? id,
+  }) async {
     try {
       dynamic result;
       if (id != null) {
         result = await ref(collection).doc(id).get();
       } else {
-        var query = await ref(collection).get();
+        var query = await ref(collection).limit(limit).get();
         result = query.docs;
       }
       return Response(value: result);

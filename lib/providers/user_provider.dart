@@ -27,8 +27,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<Response<DocumentSnapshot>> getUser(String id) async {
     try {
-      final response =
-          await FirebaseService.get<DocumentSnapshot>(Collection.Users, id);
+      final response = await FirebaseService.get<DocumentSnapshot>(
+          collection: Collection.Users, id: id);
       if (response.value != null) {
         _user = User.fromSnapshot(response.value!);
         return response;
@@ -39,10 +39,10 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getUsers() async {
+  Future<void> getUsers(int limit) async {
     try {
-      final response =
-          await FirebaseService.get<List<DocumentSnapshot>>(Collection.Users);
+      final response = await FirebaseService.get<List<DocumentSnapshot>>(
+          collection: Collection.Users, limit: limit);
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _users = snapshots.map((e) => User.fromSnapshot(e)).toList();
