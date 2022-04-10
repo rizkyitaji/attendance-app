@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Attendance {
-  String? id, name, nign, imageUrl;
+  String? id, name, nign, imageUrlIn, imageUrlOut;
   DateTime? dateIn, dateOut;
 
   Attendance({
     this.id,
     this.name,
     this.nign,
-    this.imageUrl,
+    this.imageUrlIn,
+    this.imageUrlOut,
     this.dateIn,
     this.dateOut,
   });
@@ -17,7 +18,8 @@ class Attendance {
     String? id,
     String? name,
     String? nign,
-    String? imageUrl,
+    String? imageUrlIn,
+    String? imageUrlOut,
     DateTime? dateIn,
     DateTime? dateOut,
   }) =>
@@ -25,7 +27,8 @@ class Attendance {
         id: id ?? this.id,
         name: name ?? this.name,
         nign: nign ?? this.nign,
-        imageUrl: imageUrl ?? this.imageUrl,
+        imageUrlIn: imageUrlIn ?? this.imageUrlIn,
+        imageUrlOut: imageUrlOut ?? this.imageUrlOut,
         dateIn: dateIn ?? this.dateIn,
         dateOut: dateOut ?? this.dateOut,
       );
@@ -34,7 +37,8 @@ class Attendance {
     id = snapshot['id'];
     name = snapshot['name'];
     nign = snapshot['nign'];
-    imageUrl = snapshot['image_url'];
+    imageUrlIn = snapshot['image_url_in'];
+    imageUrlOut = snapshot['image_url_out'];
     if (snapshot['date_in'] != null)
       dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['date_in']);
     if (snapshot['date_out'] != null)
@@ -46,7 +50,8 @@ class Attendance {
       'id': id,
       'name': name,
       'nign': nign,
-      'image_url': imageUrl,
+      'image_url_in': imageUrlIn,
+      'image_url_out': imageUrlOut,
       'date_in': dateIn?.millisecondsSinceEpoch,
       'date_out': dateOut?.millisecondsSinceEpoch,
     };

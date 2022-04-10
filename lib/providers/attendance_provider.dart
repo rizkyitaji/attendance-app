@@ -55,6 +55,7 @@ class AttendanceProvider extends ChangeNotifier {
         }
         _isAttend = true;
       }
+      _attendance = null;
       _isAttend = false;
       notifyListeners();
     } catch (e) {
@@ -72,8 +73,7 @@ class AttendanceProvider extends ChangeNotifier {
       final currentDate = DateTime.now();
       final userName = prov.user?.name ?? '';
       final id = '${userName}_${currentDate.formatddMMy()}';
-      final fileName = '${userName}_${currentDate.millisecondsSinceEpoch}';
-      final imageUrl = await FirebaseService.uploadImage(file, fileName);
+      final imageUrl = await FirebaseService.uploadImage(file, '${id}_$type');
       final response = await FirebaseService.set<T>(
         id: id,
         collection: Collection.Attendance,
@@ -81,16 +81,25 @@ class AttendanceProvider extends ChangeNotifier {
           id: id,
           name: userName,
           nign: prov.user?.id,
-          imageUrl: imageUrl,
+          imageUrlIn: type == 'in' ? imageUrl : _attendance?.imageUrlIn,
+          imageUrlOut: type == 'out' ? imageUrl : null,
           dateIn: type == 'in' ? currentDate : _attendance?.dateIn,
           dateOut: type == 'out' ? currentDate : null,
         ),
       );
       if (type == 'in') {
-        _attendance = Attendance(dateIn: currentDate);
+        _attendance = Attendance(
+          imageUrlIn: imageUrl,
+          dateIn: currentDate,
+        );
         _isAttend = true;
       } else {
-        _attendance = Attendance(dateOut: currentDate);
+        _attendance = Attendance(
+          imageUrlIn: _attendance?.imageUrlIn,
+          imageUrlOut: imageUrl,
+          dateIn: _attendance?.dateIn,
+          dateOut: currentDate,
+        );
         _isAttend = false;
       }
       notifyListeners();
