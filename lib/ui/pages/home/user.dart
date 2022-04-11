@@ -142,13 +142,7 @@ class _UserHomePageState extends State<UserHomePage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          if (isAbsen == true) {
-                            showSnackBar(context, "Anda Sudah Izin");
-                            print("udah izin");
-                          } else {
-                            Navigator.pushNamed(context, absentRoute);
-                            print("masuk link");
-                          }
+                          Navigator.pushNamed(context, absentRoute);
                         },
                         child: Text("IZIN"),
                       ),
