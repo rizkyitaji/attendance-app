@@ -4,6 +4,8 @@ class Absent {
   String? id, name, reason;
   DateTime? date;
 
+  Absent({this.id, this.name, this.reason, this.date});
+
   Absent.fromSnapshot(DocumentSnapshot snapshot) {
     id = snapshot['id'];
     name = snapshot['name'];
