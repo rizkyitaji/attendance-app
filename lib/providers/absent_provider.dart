@@ -8,17 +8,24 @@ import 'package:provider/provider.dart';
 import 'package:attendance/services/utils.dart';
 
 class AbsentProvider extends ChangeNotifier {
+  bool _isAbsent = false;
+  bool get isAbsent => _isAbsent;
+  set isAbsent(bool value) {
+    _isAbsent = value;
+    notifyListeners();
+  }
+
   Absent? _absent;
   Absent? get absent => _absent;
 
-  Future<Response<T>> sendReason<T>(
+  Future<void> sendReason(
       BuildContext context, String id, String reason) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
       final userName = prov.user?.name;
       final id = '${userName}_${currentDate.formatddMMy()}';
-      final response = await FirebaseService.set<T>(
+      final response = await FirebaseService.set(
         id: id,
         collection: Collection.Absent,
         data: Absent(
@@ -28,7 +35,8 @@ class AbsentProvider extends ChangeNotifier {
           date: currentDate,
         ),
       );
-      return response;
+      isAbsent = !isAbsent;
+      _absent = response.value;
     } catch (e) {
       throw e;
     }

@@ -1,4 +1,5 @@
 import 'package:attendance/models/attendance.dart';
+import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -84,8 +85,9 @@ class _UserHomePageState extends State<UserHomePage> {
       appBar: CustomAppBar(showLogout: true),
       body: RefreshIndicator(
         onRefresh: _getData,
-        child: Consumer2<UserProvider, AttendanceProvider>(
-          builder: (context, userProv, attendProv, _) {
+        child: Consumer3<UserProvider, AttendanceProvider, AbsentProvider>(
+          builder: (context, userProv, attendProv, absentProv, _) {
+            final isAbsen = absentProv.isAbsent;
             final user = userProv.user;
             final isAttend = attendProv.isAttend;
 
@@ -139,8 +141,15 @@ class _UserHomePageState extends State<UserHomePage> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () =>
-                            Navigator.pushNamed(context, absentRoute),
+                        onPressed: () {
+                          if (isAbsen == true) {
+                            showSnackBar(context, "Anda Sudah Izin");
+                            print("udah izin");
+                          } else {
+                            Navigator.pushNamed(context, absentRoute);
+                            print("masuk link");
+                          }
+                        },
                         child: Text("IZIN"),
                       ),
                     ),
