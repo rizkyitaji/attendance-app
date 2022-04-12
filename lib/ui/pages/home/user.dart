@@ -1,5 +1,4 @@
 import 'package:attendance/models/attendance.dart';
-import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -82,12 +81,11 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(showLogout: true),
+      appBar: CustomAppBar(title: "ABSENSI GURU", showLogout: true),
       body: RefreshIndicator(
         onRefresh: _getData,
-        child: Consumer3<UserProvider, AttendanceProvider, AbsentProvider>(
-          builder: (context, userProv, attendProv, absentProv, _) {
-            final isAbsen = absentProv.isAbsent;
+        child: Consumer2<UserProvider, AttendanceProvider>(
+          builder: (context, userProv, attendProv, _) {
             final user = userProv.user;
             final isAttend = attendProv.isAttend;
 

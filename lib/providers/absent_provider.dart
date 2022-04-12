@@ -1,5 +1,4 @@
 import 'package:attendance/models/absent.dart';
-import 'package:attendance/models/response.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';

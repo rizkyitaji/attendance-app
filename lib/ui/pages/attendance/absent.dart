@@ -1,5 +1,4 @@
 import 'package:attendance/providers/absent_provider.dart';
-import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/themes.dart';
@@ -21,7 +20,7 @@ class _AbsentPageState extends State<AbsentPage> {
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
     try {
-      final result = await prov.sendReason(
+      await prov.sendReason(
         context,
         prov.absent?.id ?? '-',
         _cReason.text.trim(),
@@ -29,7 +28,7 @@ class _AbsentPageState extends State<AbsentPage> {
       showSnackBar(context, "Pesan sudah di kirim");
       Navigator.pop(context);
     } catch (e) {
-      throw e;
+      showSnackBar(context, e.toString());
     }
   }
 
@@ -38,7 +37,6 @@ class _AbsentPageState extends State<AbsentPage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: "IZIN",
-        showLogout: true,
       ),
       body: Consumer<UserProvider>(builder: (context, userProv, _) {
         final user = userProv.user;
@@ -110,9 +108,7 @@ class _AbsentPageState extends State<AbsentPage> {
               height: 40,
             ),
             ElevatedButton(
-              onPressed: () {
-                _send();
-              },
+              onPressed: _send,
               child: Text("KIRIM"),
             ),
           ],
