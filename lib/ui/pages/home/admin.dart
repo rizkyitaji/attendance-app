@@ -80,8 +80,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
     final users = prov.users ?? [];
     if (value.isNotEmpty) {
       _users = users.where((e) {
-        return e.name!.toLowerCase().contains(value.toLowerCase()) ||
-            e.id!.contains(value);
+        return (e.name ?? '').toLowerCase().contains(value.toLowerCase()) ||
+            (e.id ?? '').contains(value);
       }).toList();
     } else {
       _users = users;
@@ -96,64 +96,62 @@ class _AdminHomePageState extends State<AdminHomePage> {
         title: 'Daftar Guru',
         showLogout: true,
       ),
-      body: RefreshView(
-        onRefresh: _getData,
-        onLoadMore: _loadingMore,
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _cSearch,
-                      focusNode: _searchFocus,
-                      style: poppinsBlackw400.copyWith(fontSize: 14),
-                      onChanged: _onSearch,
-                      decoration: InputDecoration(
-                        hintText: 'Cari Guru',
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: blue,
-                        ),
+      body: Padding(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _cSearch,
+                    focusNode: _searchFocus,
+                    style: poppinsBlackw400.copyWith(fontSize: 14),
+                    onChanged: _onSearch,
+                    decoration: InputDecoration(
+                      hintText: 'Cari Guru',
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: blue,
                       ),
                     ),
                   ),
-                  SizedBox(width: 24),
-                  InkWell(
-                    onTap: () {
-                      _searchFocus.unfocus();
-                      Navigator.pushNamed(context, profileRoute);
-                    },
-                    child: Icon(
-                      Icons.add_circle,
-                      color: blue,
-                      size: 48,
-                    ),
+                ),
+                SizedBox(width: 24),
+                InkWell(
+                  onTap: () {
+                    _searchFocus.unfocus();
+                    Navigator.pushNamed(context, profileRoute);
+                  },
+                  child: Icon(
+                    Icons.add_circle,
+                    color: blue,
+                    size: 48,
                   ),
-                ],
-              ),
-              SizedBox(height: 24),
-              Expanded(
+                ),
+              ],
+            ),
+            SizedBox(height: 24),
+            Expanded(
+              child: RefreshView(
+                onRefresh: _getData,
+                onLoadMore: _loadingMore,
                 child: Visibility(
                   visible: !_loading,
-                  replacement: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 200),
-                      child: CircularProgressIndicator(),
-                    ),
+                  replacement: Padding(
+                    padding: EdgeInsets.only(top: 200),
+                    child: CircularProgressIndicator(),
                   ),
                   child: Visibility(
                     visible: _users.isNotEmpty,
                     replacement: Padding(
-                      padding: EdgeInsets.only(top: 120),
+                      padding: EdgeInsets.only(top: 55),
                       child: EmptyWidget(action: _getData),
                     ),
                     child: ListView.separated(
                       controller: _cScroll,
                       itemCount: _users.length,
-                      padding: EdgeInsets.only(bottom: 60),
+                      padding: EdgeInsets.only(bottom: 80),
                       itemBuilder: (context, index) {
                         final data = _users[index];
 
@@ -164,17 +162,30 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                 arguments: data);
                           },
                           padding: EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          margin: EdgeInsets.symmetric(horizontal: 2),
+                          child: Row(
                             children: [
-                              Text(
-                                (data.name ?? '-').capitalize(),
-                                style: poppinsBlackw600.copyWith(fontSize: 16),
+                              Icon(
+                                Icons.account_circle,
+                                color: Colors.black.withOpacity(0.7),
+                                size: 50,
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                data.id ?? '-',
-                                style: poppinsBlackw600.copyWith(fontSize: 12),
+                              SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    (data.name ?? '-').capitalize(),
+                                    style:
+                                        poppinsBlackw600.copyWith(fontSize: 16),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    data.id ?? '-',
+                                    style:
+                                        poppinsBlackw600.copyWith(fontSize: 12),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -186,9 +197,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

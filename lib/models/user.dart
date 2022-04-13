@@ -12,11 +12,16 @@ class User {
     this.level,
   });
 
-  User.fromSnapshot(DocumentSnapshot snapshot) {
-    id = snapshot['id'];
-    password = snapshot['password'];
-    name = snapshot['name'];
-    level = snapshot['level'] == 'user' ? Level.User : Level.Admin;
+  factory User.fromSnapshot(DocumentSnapshot snapshot) {
+    final value = snapshot.data() as Map<String, dynamic>;
+    return User.fromMap(value);
+  }
+
+  User.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    password = map['password'];
+    name = map['name'];
+    level = map['level'] == 'user' ? Level.User : Level.Admin;
   }
 
   Map<String, dynamic> toMap() {
@@ -24,7 +29,7 @@ class User {
       'id': id,
       'password': password,
       'name': name,
-      'level': level == Level.User ? 'user' : 'admin',
+      'level': level == Level.Admin ? 'admin' : 'user',
     };
   }
 }
