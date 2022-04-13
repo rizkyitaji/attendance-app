@@ -114,55 +114,68 @@ class _UserHomePageState extends State<UserHomePage> {
                     )
                   ],
                 ),
-                SizedBox(height: 80),
-                Icon(
-                  Icons.check_circle_outline_rounded,
-                  color: isAttend ? blue : grey,
-                  size: 150,
-                ),
-                SizedBox(height: 80),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _currentDate.formatMMMMddy(),
-                      style: poppinsBlackw400.copyWith(fontSize: 15),
-                    ),
-                    Text(
-                      _currentDate.formathhmm(),
-                      style: poppinsBlackw400.copyWith(fontSize: 15),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 40),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, absentRoute);
-                        },
-                        child: Text("IZIN"),
-                      ),
-                    ),
-                    SizedBox(width: 32),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _showModal,
-                        child: Text("ABSEN"),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 40),
-                OutlinedButton(
-                  onPressed: () => Navigator.pushNamed(context, attendanceRoute,
-                      arguments: user),
-                  child: Text("DAFTAR ABSEN"),
+                SizedBox(
+                  height: height(context) - 380,
+                  child: Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: isAttend ? blue : grey,
+                    size: 150,
+                  ),
                 ),
               ],
             );
           },
+        ),
+      ),
+      bottomSheet: Padding(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _currentDate.formatMMMMddy(),
+                  style: poppinsBlackw400.copyWith(fontSize: 15),
+                ),
+                Text(
+                  _currentDate.formathhmm(),
+                  style: poppinsBlackw400.copyWith(fontSize: 15),
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, absentRoute),
+                    child: Text("IZIN"),
+                  ),
+                ),
+                SizedBox(width: 32),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _showModal,
+                    child: Text("ABSEN"),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 40),
+            OutlinedButton(
+              onPressed: () {
+                final prov = Provider.of<UserProvider>(context, listen: false);
+                Navigator.pushNamed(context, attendanceRoute,
+                    arguments: prov.user);
+              },
+              child: Center(
+                child: Text("DAFTAR ABSEN"),
+              ),
+            ),
+            SizedBox(height: 24),
+          ],
         ),
       ),
     );

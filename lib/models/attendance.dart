@@ -33,16 +33,21 @@ class Attendance {
         dateOut: dateOut ?? this.dateOut,
       );
 
-  Attendance.fromSnapshot(DocumentSnapshot snapshot) {
-    id = snapshot['id'];
-    name = snapshot['name'];
-    nign = snapshot['nign'];
-    imageUrlIn = snapshot['image_url_in'];
-    imageUrlOut = snapshot['image_url_out'];
-    if (snapshot['date_in'] != null)
-      dateIn = DateTime.fromMillisecondsSinceEpoch(snapshot['date_in']);
-    if (snapshot['date_out'] != null)
-      dateOut = DateTime.fromMillisecondsSinceEpoch(snapshot['date_out']);
+  factory Attendance.fromSnapshot(DocumentSnapshot snapshot) {
+    final value = snapshot.data() as Map<String, dynamic>;
+    return Attendance.fromMap(value);
+  }
+
+  Attendance.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    name = map['name'];
+    nign = map['nign'];
+    imageUrlIn = map['image_url_in'];
+    imageUrlOut = map['image_url_out'];
+    if (map['date_in'] != null)
+      dateIn = DateTime.fromMillisecondsSinceEpoch(map['date_in']);
+    if (map['date_out'] != null)
+      dateOut = DateTime.fromMillisecondsSinceEpoch(map['date_out']);
   }
 
   Map<String, dynamic> toMap() {
