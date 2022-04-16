@@ -64,7 +64,7 @@ class UserProvider extends ChangeNotifier {
           pref.setString('user', _user?.id ?? '');
           return 'Selamat Datang';
         } else {
-          return 'Password Anda salah atau tidak terdaftar';
+          return 'Kata sandi Anda salah atau tidak terdaftar';
         }
       }
     } catch (e) {
@@ -74,13 +74,35 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> logout(BuildContext context) async {
     try {
+      final attendanceProv =
+          Provider.of<AttendanceProvider>(context, listen: false);
+      final absentProv =
+          Provider.of<AttendanceProvider>(context, listen: false);
       final pref = await SharedPreferences.getInstance();
       pref.clear();
 
-      final attendanceProv =
-          Provider.of<AttendanceProvider>(context, listen: false);
       attendanceProv.resetState();
+      absentProv.resetState();
       resetState();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> update(String password) async {
+    try {
+      final response = await FirebaseService.set<User>(
+        id: _user?.id,
+        collection: Collection.Users,
+        data: User(
+          id: _user?.id,
+          name: user?.name,
+          level: user?.level,
+          password: password,
+        ),
+      );
+      _user = response;
+      notifyListeners();
     } catch (e) {
       throw e;
     }

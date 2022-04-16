@@ -1,4 +1,3 @@
-import 'package:attendance/models/attendance.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -58,7 +57,7 @@ class _UserHomePageState extends State<UserHomePage> {
       if (!mounted) return;
       if (image != null) {
         showLoadingDialog(context);
-        await prov.attend<Attendance>(context, image, type).then((_) {
+        await prov.attend(context, image, type).then((_) {
           Navigator.pop(context);
           _showDialog();
         });
@@ -81,7 +80,7 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(showLogout: true),
+      appBar: CustomAppBar(title: "ABSENSI GURU", showLogout: true),
       body: RefreshIndicator(
         onRefresh: _getData,
         child: Consumer2<UserProvider, AttendanceProvider>(
