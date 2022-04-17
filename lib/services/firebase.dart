@@ -24,7 +24,7 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<T>> set<T>({
+  static Future<T> set<T>({
     required Collection? collection,
     String? id,
     required dynamic data,
@@ -38,10 +38,7 @@ class FirebaseService {
           value.set(data.toMap());
         });
       }
-      return Response(
-        value: data,
-        message: 'Data berhasil ditambahkan',
-      );
+      return data;
     } catch (e) {
       throw e;
     }
@@ -50,6 +47,7 @@ class FirebaseService {
   static Future<Response<T>> get<T>({
     required Collection collection,
     int limit = 10,
+    String? query,
     String? id,
   }) async {
     try {
@@ -57,8 +55,16 @@ class FirebaseService {
       if (id != null) {
         result = await ref(collection).doc(id).get();
       } else {
-        var query = await ref(collection).limit(limit).get();
-        result = query.docs;
+        late QuerySnapshot querySnapshot;
+        if (query != null) {
+          querySnapshot = await ref(collection)
+              .limit(limit)
+              .where('nign', isEqualTo: query)
+              .get();
+        } else {
+          querySnapshot = await ref(collection).limit(limit).get();
+        }
+        result = querySnapshot.docs;
       }
       return Response(value: result);
     } catch (e) {
@@ -66,13 +72,16 @@ class FirebaseService {
     }
   }
 
-  static Future<Response<T>> delete<T>({
+  static Future<Response<bool>> delete({
     required Collection? collection,
     required String? id,
   }) async {
     try {
       await ref(collection).doc(id).delete();
-      return Response(message: 'Data berhasil dihapus');
+      return Response(
+        value: true,
+        message: 'Data berhasil dihapus',
+      );
     } catch (e) {
       throw e;
     }

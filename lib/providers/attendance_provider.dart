@@ -1,5 +1,4 @@
 import 'package:attendance/models/attendance.dart';
-import 'package:attendance/models/response.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';
@@ -29,10 +28,10 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAttendances(int limit) async {
+  Future<void> getAttendances({int? limit, String? id}) async {
     try {
       final response = await FirebaseService.get<List<DocumentSnapshot>>(
-          collection: Collection.Attendance, limit: limit);
+          collection: Collection.Attendance, limit: limit!, query: id);
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _attendances =
@@ -63,7 +62,7 @@ class AttendanceProvider extends ChangeNotifier {
     }
   }
 
-  Future<Response<T>> attend<T>(
+  Future<void> attend(
     BuildContext context,
     XFile file,
     String type,
@@ -74,7 +73,7 @@ class AttendanceProvider extends ChangeNotifier {
       final userName = prov.user?.name ?? '';
       final id = '${userName}_${currentDate.formatddMMy()}';
       final imageUrl = await FirebaseService.uploadImage(file, '${id}_$type');
-      final response = await FirebaseService.set<T>(
+      final response = await FirebaseService.set<Attendance>(
         id: id,
         collection: Collection.Attendance,
         data: Attendance(
@@ -87,23 +86,9 @@ class AttendanceProvider extends ChangeNotifier {
           dateOut: type == 'out' ? currentDate : null,
         ),
       );
-      if (type == 'in') {
-        _attendance = Attendance(
-          imageUrlIn: imageUrl,
-          dateIn: currentDate,
-        );
-        _isAttend = true;
-      } else {
-        _attendance = Attendance(
-          imageUrlIn: _attendance?.imageUrlIn,
-          imageUrlOut: imageUrl,
-          dateIn: _attendance?.dateIn,
-          dateOut: currentDate,
-        );
-        _isAttend = false;
-      }
+      _attendance = response;
+      _isAttend = !_isAttend;
       notifyListeners();
-      return response;
     } catch (e) {
       throw e;
     }

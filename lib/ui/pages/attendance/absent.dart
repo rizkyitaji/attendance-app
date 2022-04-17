@@ -14,11 +14,16 @@ class AbsentPage extends StatefulWidget {
 }
 
 class _AbsentPageState extends State<AbsentPage> {
+<<<<<<< HEAD
+=======
+  final _formKey = GlobalKey<FormFieldState>();
+>>>>>>> b933595e3f4fa99d45b8bbf670778f2503a36f8a
   final _cReason = TextEditingController();
   DateTime _currentDate = DateTime.now();
 
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
+<<<<<<< HEAD
     try {
       await prov.sendReason(
         context,
@@ -29,6 +34,18 @@ class _AbsentPageState extends State<AbsentPage> {
       Navigator.pop(context);
     } catch (e) {
       showSnackBar(context, e.toString());
+=======
+    if (_formKey.currentState!.validate()) {
+      try {
+        await prov.sendReason(context, _cReason.text.trim());
+        if (!mounted) return;
+        Navigator.pop(context);
+        showSnackBar(context, "Permohonan izin telah dikirim");
+      } catch (e) {
+        if (!mounted) return;
+        showSnackBar(context, e.toString());
+      }
+>>>>>>> b933595e3f4fa99d45b8bbf670778f2503a36f8a
     }
   }
 
@@ -38,6 +55,7 @@ class _AbsentPageState extends State<AbsentPage> {
       appBar: CustomAppBar(
         title: "IZIN",
       ),
+<<<<<<< HEAD
       body: Consumer<UserProvider>(builder: (context, userProv, _) {
         final user = userProv.user;
         return ListView(
@@ -114,6 +132,92 @@ class _AbsentPageState extends State<AbsentPage> {
           ],
         );
       }),
+=======
+      body: Consumer<UserProvider>(
+        builder: (context, prov, _) {
+          final user = prov.user;
+
+          return ListView(
+            padding: EdgeInsets.all(24),
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        (user?.name ?? '-').capitalize(),
+                        style: poppinsBlackw600.copyWith(
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        (user?.id ?? '-').capitalize(),
+                        style: poppinsBlackw600.copyWith(
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(context, settingRoute),
+                    child: Icon(Icons.settings),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Text(
+                "ALASAN TIDAK MASUK",
+                style: poppinsBlackw400.copyWith(
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                key: _formKey,
+                controller: _cReason,
+                keyboardType: TextInputType.multiline,
+                maxLines: 8,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Field ini harus diisi';
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _currentDate.formatMMMMddy(),
+                    style: poppinsBlackw400.copyWith(
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    _currentDate.formathhmm(),
+                    style: poppinsBlackw400.copyWith(fontSize: 15),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              ElevatedButton(
+                onPressed: _send,
+                child: Text("Kirim"),
+              ),
+            ],
+          );
+        },
+      ),
+>>>>>>> b933595e3f4fa99d45b8bbf670778f2503a36f8a
     );
   }
 }

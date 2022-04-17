@@ -1,4 +1,3 @@
-import 'package:attendance/models/attendance.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -58,7 +57,7 @@ class _UserHomePageState extends State<UserHomePage> {
       if (!mounted) return;
       if (image != null) {
         showLoadingDialog(context);
-        await prov.attend<Attendance>(context, image, type).then((_) {
+        await prov.attend(context, image, type).then((_) {
           Navigator.pop(context);
           _showDialog();
         });

@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value!.isEmpty) return 'Field ini harus diisi';
                         if (value.length < 6)
-                          return 'Minimal password harus 6 karakter';
+                          return 'Kata sandi minimal harus 6 karakter';
                         return null;
                       },
                       decoration: InputDecoration(

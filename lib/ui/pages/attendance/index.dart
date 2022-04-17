@@ -73,7 +73,7 @@ class _AttendancePageState extends State<AttendancePage> {
     });
     try {
       await Future.delayed(Duration(milliseconds: 500)).then((_) async {
-        await prov.getAttendances(_limit);
+        await prov.getAttendances(limit: _limit, id: widget.argument?.id);
       });
       if (!mounted) return;
       _filter(attendances: prov.attendances ?? []);
@@ -90,19 +90,13 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   void _filter({List<Attendance>? attendances, List<Absent>? absent}) {
-    final id = widget.argument?.id;
-
     if (attendances != null) {
       _attendances = attendances
-          .where((e) =>
-              e.nign == id &&
-              e.dateIn!.formatMMMMy() == _currentDate.formatMMMMy())
+          .where((e) => e.dateIn!.formatMMMMy() == _currentDate.formatMMMMy())
           .toList();
     } else if (absent != null) {
       _absent = absent
-          .where((e) =>
-              e.nign == id &&
-              e.date!.formatMMMMy() == _currentDate.formatMMMMy())
+          .where((e) => e.date!.formatMMMMy() == _currentDate.formatMMMMy())
           .toList();
     }
   }
@@ -217,7 +211,7 @@ class _AttendancePageState extends State<AttendancePage> {
                   var i = periods.indexOf(value!);
                   _currentDate = dateTimes[i];
                   _period = value;
-                  if (_attendance == 'Hadir') _getAttendances();
+                  if (_attendance != 'Tidak Hadir') _getAttendances();
                 },
                 dropdownColor: blue,
                 items: periods.map((value) {
