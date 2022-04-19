@@ -107,4 +107,21 @@ class UserProvider extends ChangeNotifier {
       throw e;
     }
   }
+
+  Future<void> updateUser(String id, String name, String newPassword) async {
+    try {
+      await FirebaseService.set<User>(
+        id: id,
+        collection: Collection.Users,
+        data: User(
+          id: id,
+          name: name,
+          level: Level.User,
+          password: newPassword,
+        ),
+      );
+    } catch (e) {
+      throw e;
+    }
+  }
 }

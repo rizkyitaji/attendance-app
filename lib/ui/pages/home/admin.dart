@@ -156,10 +156,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         final data = _users[index];
 
                         return ContainerShadow(
-                          onTap: () {
+                          onTap: () async {
                             _searchFocus.unfocus();
-                            Navigator.pushNamed(context, attendanceRoute,
-                                arguments: data);
+                            await Navigator.pushNamed(context, attendanceRoute,
+                                    arguments: data)
+                                .then((_) => _getData());
                           },
                           padding: EdgeInsets.all(12),
                           margin: EdgeInsets.symmetric(horizontal: 2),

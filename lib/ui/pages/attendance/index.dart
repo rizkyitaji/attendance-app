@@ -25,6 +25,9 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
+  String? _name;
+
+  String? _nign;
   bool _loading = false, _loadingMore = false;
   DateTime _currentDate = DateTime.now();
   final _cScroll = ScrollController();
@@ -37,6 +40,8 @@ class _AttendancePageState extends State<AttendancePage> {
   @override
   void initState() {
     super.initState();
+    _name = widget.argument?.name ?? '-';
+    _nign = widget.argument?.id ?? '-';
     _cScroll.addListener(_scrollListener);
     _getData();
   }
@@ -121,20 +126,34 @@ class _AttendancePageState extends State<AttendancePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (widget.argument?.name ?? '-').capitalize(),
+                      (_name ?? '-').capitalize(),
                       style: poppinsBlackw600.copyWith(fontSize: 16),
                     ),
                     Text(
-                      widget.argument?.id ?? '-',
+                      _nign ?? '-',
                       style: poppinsBlackw600.copyWith(fontSize: 12),
                     ),
                   ],
                 ),
                 Consumer<UserProvider>(
                   builder: (context, value, _) => InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (value.user?.level == Level.Admin)
-                        Navigator.pushNamed(context, profileRoute);
+                        await Navigator.pushNamed(context, profileRoute,
+                                arguments: widget.argument)
+                            .then(
+                          (value) {
+                            value as User?;
+                            if (value != null) {
+                              setState(
+                                () {
+                                  _name = value.name ?? '-';
+                                  _nign = value.id ?? '-';
+                                },
+                              );
+                            }
+                          },
+                        );
                       else
                         Navigator.pushNamed(context, settingRoute);
                     },

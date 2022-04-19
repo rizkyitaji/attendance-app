@@ -43,7 +43,9 @@ class Router {
       case profileRoute:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => ProfilePage(),
+          builder: (_) => ProfilePage(
+            argument: settings.arguments as User,
+          ),
         );
       case settingRoute:
         return MaterialPageRoute(
