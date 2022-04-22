@@ -121,7 +121,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 InkWell(
                   onTap: () {
                     _searchFocus.unfocus();
-                    Navigator.pushNamed(context, profileRoute);
+                    Navigator.pushNamed(
+                      context,
+                      profileRoute,
+                      arguments: User(),
+                    ).then((_) => _getData());
                   },
                   child: Icon(
                     Icons.add_circle,
@@ -158,9 +162,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         return ContainerShadow(
                           onTap: () async {
                             _searchFocus.unfocus();
-                            await Navigator.pushNamed(context, attendanceRoute,
-                                    arguments: data)
-                                .then((_) => _getData());
+                            await Navigator.pushNamed(
+                              context,
+                              attendanceRoute,
+                              arguments: data,
+                            ).then((_) => _getData());
                           },
                           padding: EdgeInsets.all(12),
                           margin: EdgeInsets.symmetric(horizontal: 2),

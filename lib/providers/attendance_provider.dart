@@ -24,6 +24,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   void resetState() {
     _isAttend = false;
+    _attendance = null;
     _attendances = null;
     notifyListeners();
   }
@@ -53,8 +54,9 @@ class AttendanceProvider extends ChangeNotifier {
           _isAttend = false;
         }
         _isAttend = true;
+      } else {
+        _attendance = null;
       }
-      _attendance = null;
       _isAttend = false;
       notifyListeners();
     } catch (e) {

@@ -1,6 +1,7 @@
 import 'package:attendance/models/absent.dart';
 import 'package:attendance/models/attendance.dart';
 import 'package:attendance/models/user.dart';
+import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -25,31 +26,33 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  String? _name;
-
-  String? _nign;
+  String? _period, _attendance, _name, _nign, _password;
   bool _loading = false, _loadingMore = false;
   DateTime _currentDate = DateTime.now();
   final _cScroll = ScrollController();
   List<Attendance> _attendances = [];
-  String? _period, _attendance;
-  List<Absent> _absent = [];
-
+  List<Absent> _absents = [];
   int _limit = 10;
 
   @override
   void initState() {
     super.initState();
-    _name = widget.argument?.name ?? '-';
-    _nign = widget.argument?.id ?? '-';
-    _cScroll.addListener(_scrollListener);
-    _getData();
+    _init();
   }
 
   @override
   void dispose() {
     _cScroll.removeListener(_scrollListener);
     super.dispose();
+  }
+
+  void _init() async {
+    _name = widget.argument?.name ?? '-';
+    _nign = widget.argument?.id ?? '-';
+    _password = widget.argument?.password ?? '-';
+    _cScroll.addListener(_scrollListener);
+
+    await _getData();
   }
 
   void _scrollListener() {
@@ -63,9 +66,10 @@ class _AttendancePageState extends State<AttendancePage> {
     else
       _limit = 10;
 
-    await Future.wait([
-      _getAttendances(refresh),
-    ]);
+    if (_attendance != 'Tidak Hadir')
+      _getAttendances(refresh);
+    else
+      _getAbsents(refresh);
   }
 
   Future<void> _getAttendances([bool refresh = false]) async {
@@ -94,13 +98,39 @@ class _AttendancePageState extends State<AttendancePage> {
     });
   }
 
-  void _filter({List<Attendance>? attendances, List<Absent>? absent}) {
+  Future<void> _getAbsents([bool refresh = false]) async {
+    final prov = Provider.of<AbsentProvider>(context, listen: false);
+    setState(() {
+      if (refresh)
+        _loadingMore = true;
+      else
+        _loading = true;
+    });
+    try {
+      await Future.delayed(Duration(milliseconds: 500)).then((_) async {
+        await prov.getAbsents(limit: _limit, id: widget.argument?.id);
+      });
+      if (!mounted) return;
+      _filter(absents: prov.absents ?? []);
+    } catch (e) {
+      if (!mounted) return;
+      showSnackBar(context, e.toString());
+    }
+    setState(() {
+      if (refresh)
+        _loadingMore = false;
+      else
+        _loading = false;
+    });
+  }
+
+  void _filter({List<Attendance>? attendances, List<Absent>? absents}) {
     if (attendances != null) {
       _attendances = attendances
           .where((e) => e.dateIn!.formatMMMMy() == _currentDate.formatMMMMy())
           .toList();
-    } else if (absent != null) {
-      _absent = absent
+    } else if (absents != null) {
+      _absents = absents
           .where((e) => e.date!.formatMMMMy() == _currentDate.formatMMMMy())
           .toList();
     }
@@ -109,9 +139,7 @@ class _AttendancePageState extends State<AttendancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Absensi',
-      ),
+      appBar: CustomAppBar(title: 'Absensi'),
       body: RefreshView(
         onRefresh: _getData,
         onLoadMore: _loadingMore,
@@ -136,33 +164,40 @@ class _AttendancePageState extends State<AttendancePage> {
                   ],
                 ),
                 Consumer<UserProvider>(
-                  builder: (context, value, _) => InkWell(
-                    onTap: () async {
-                      if (value.user?.level == Level.Admin)
-                        await Navigator.pushNamed(context, profileRoute,
-                                arguments: widget.argument)
-                            .then(
-                          (value) {
-                            value as User?;
-                            if (value != null) {
-                              setState(
-                                () {
-                                  _name = value.name ?? '-';
-                                  _nign = value.id ?? '-';
-                                },
-                              );
-                            }
-                          },
-                        );
-                      else
-                        Navigator.pushNamed(context, settingRoute);
-                    },
-                    child: Icon(
-                      value.user?.level == Level.Admin
-                          ? Icons.edit_note_rounded
-                          : Icons.settings,
-                    ),
-                  ),
+                  builder: (context, value, _) {
+                    return InkWell(
+                      onTap: () async {
+                        if (value.user?.level == Level.Admin) {
+                          final result = await Navigator.pushNamed(
+                            context,
+                            profileRoute,
+                            arguments: User(
+                              id: _nign,
+                              name: _name,
+                              password: _password,
+                            ),
+                          );
+                          final value = result as User?;
+
+                          if (value != null) {
+                            setState(() {
+                              _name = value.name ?? widget.argument?.name;
+                              _nign = value.id ?? widget.argument?.id;
+                              _password =
+                                  value.password ?? widget.argument?.password;
+                            });
+                          }
+                        } else {
+                          Navigator.pushNamed(context, settingRoute);
+                        }
+                      },
+                      child: Icon(
+                        value.user?.level == Level.Admin
+                            ? Icons.edit_note_rounded
+                            : Icons.settings,
+                      ),
+                    );
+                  },
                 )
               ],
             ),
@@ -230,7 +265,10 @@ class _AttendancePageState extends State<AttendancePage> {
                   var i = periods.indexOf(value!);
                   _currentDate = dateTimes[i];
                   _period = value;
-                  if (_attendance != 'Tidak Hadir') _getAttendances();
+                  if (_attendance != 'Tidak Hadir')
+                    _getAttendances();
+                  else
+                    _getAbsents();
                 },
                 dropdownColor: blue,
                 items: periods.map((value) {
@@ -273,7 +311,10 @@ class _AttendancePageState extends State<AttendancePage> {
                 style: poppinsWhitew500,
                 onChanged: (value) {
                   setState(() => _attendance = value);
-                  if (value == 'Hadir') _getAttendances();
+                  if (value == 'Hadir')
+                    _getAttendances();
+                  else
+                    _getAbsents();
                 },
                 dropdownColor: blue,
                 items: attendance.map((value) {
@@ -306,7 +347,7 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _attendances[index];
 
           return ContainerShadow(
-            onTap: () => Navigator.pushNamed(context, profileRoute),
+            onTap: () {},
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
@@ -359,21 +400,23 @@ class _AttendancePageState extends State<AttendancePage> {
 
   Widget _absentList() {
     return Visibility(
-      visible: _absent.isNotEmpty,
+      visible: _absents.isNotEmpty,
       replacement: Padding(
         padding: EdgeInsets.only(top: 55),
         child: EmptyWidget(action: _getData),
       ),
       child: ListView.separated(
         shrinkWrap: true,
-        itemCount: _absent.length,
+        itemCount: _absents.length,
         padding: EdgeInsets.only(bottom: 60),
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          final data = _absent[index];
+          final data = _absents[index];
 
           return ContainerShadow(
-            onTap: () => Navigator.pushNamed(context, profileRoute),
+            onTap: () =>
+                Navigator.pushNamed(context, absentRoute, arguments: data)
+                    .then((_) => _getAbsents()),
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
@@ -383,7 +426,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     children: [
                       if (data.date != null)
                         Text(
-                          data.date!.formatMMMMy(),
+                          data.date!.formatMMMMddy(),
                           style: poppinsBlackw600.copyWith(fontSize: 18),
                         ),
                       SizedBox(height: 4),

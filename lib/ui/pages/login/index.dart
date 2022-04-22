@@ -74,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: _cNign,
                       keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
                       style: poppinsBlackw400.copyWith(fontSize: 14),
                       validator: (value) {
                         if (value!.isEmpty) return 'Field ini harus diisi';
@@ -87,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: _cPassword,
                       obscureText: _isObscure,
+                      textInputAction: TextInputAction.done,
                       style: poppinsBlackw400.copyWith(fontSize: 14),
                       onChanged: (value) {
                         if (value.isNotEmpty) _formKey.currentState!.validate();
@@ -116,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 32),
               child: ElevatedButton(
                 onPressed: _login,
                 child: Text('Masuk'),

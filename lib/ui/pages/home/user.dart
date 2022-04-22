@@ -1,3 +1,5 @@
+import 'package:attendance/models/absent.dart';
+import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
@@ -28,11 +30,30 @@ class _UserHomePageState extends State<UserHomePage> {
   }
 
   Future<void> _getData() async {
+    final prov = Provider.of<UserProvider>(context, listen: false);
+    final id = '${prov.user?.name}_${_currentDate.formatddMMy()}';
+
+    await Future.delayed(Duration(milliseconds: 500)).then((_) {
+      _getDailyAttendance(id);
+      _getAbsent(id);
+    });
+  }
+
+  Future<void> _getDailyAttendance(String id) async {
     final prov = Provider.of<AttendanceProvider>(context, listen: false);
-    final prov2 = Provider.of<UserProvider>(context, listen: false);
-    final id = '${prov2.user?.name}_${_currentDate.formatddMMy()}';
     try {
       await prov.getDailyAttendance(id);
+      if (!mounted) return;
+    } catch (e) {
+      if (!mounted) return;
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<void> _getAbsent(String id) async {
+    final prov = Provider.of<AbsentProvider>(context, listen: false);
+    try {
+      await prov.getAbsent(id);
       if (!mounted) return;
     } catch (e) {
       if (!mounted) return;
@@ -80,7 +101,10 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "ABSENSI GURU", showLogout: true),
+      appBar: CustomAppBar(
+        title: "Beranda",
+        showLogout: true,
+      ),
       body: RefreshIndicator(
         onRefresh: _getData,
         child: Consumer2<UserProvider, AttendanceProvider>(
@@ -149,7 +173,15 @@ class _UserHomePageState extends State<UserHomePage> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, absentRoute),
+                    onPressed: () {
+                      final prov =
+                          Provider.of<AbsentProvider>(context, listen: false);
+                      Navigator.pushNamed(
+                        context,
+                        absentRoute,
+                        arguments: prov.absent ?? Absent(),
+                      ).then((_) => _getData());
+                    },
                     child: Text("IZIN"),
                   ),
                 ),
@@ -166,8 +198,11 @@ class _UserHomePageState extends State<UserHomePage> {
             OutlinedButton(
               onPressed: () {
                 final prov = Provider.of<UserProvider>(context, listen: false);
-                Navigator.pushNamed(context, attendanceRoute,
-                    arguments: prov.user);
+                Navigator.pushNamed(
+                  context,
+                  attendanceRoute,
+                  arguments: prov.user,
+                ).then((_) => _getData());
               },
               child: Center(
                 child: Text("DAFTAR ABSEN"),
