@@ -1,12 +1,14 @@
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/services/location.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/services/utils.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -41,13 +43,24 @@ class _UserHomePageState extends State<UserHomePage> {
   }
 
   void _showModal() async {
-    await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => AttendOptionModal(),
-    ).then((value) {
-      if (value != null) _attend(value);
-    });
+    try {
+      final permission = await LocationServices.checkPermission();
+      if (permission) {
+        await showModalBottomSheet<String>(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) => AttendOptionModal(),
+        ).then((value) {
+          if (value != null) _attend(value);
+        });
+      } else {
+        showSnackBar(context, "Anda belum mengaktifkan Lokasi / GPS");
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      showSnackBar(context, e.toString());
+    }
   }
 
   void _attend(String type) async {
@@ -156,7 +169,9 @@ class _UserHomePageState extends State<UserHomePage> {
                 SizedBox(width: 32),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _showModal,
+                    onPressed: () {
+                      _showModal();
+                    },
                     child: Text("ABSEN"),
                   ),
                 )

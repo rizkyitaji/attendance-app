@@ -138,7 +138,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 Consumer<UserProvider>(
                   builder: (context, value, _) => InkWell(
                     onTap: () async {
-                      if (value.user?.level == Level.Admin)
+                      if (value.user?.level == Level.Admin) {
                         await Navigator.pushNamed(context, profileRoute,
                                 arguments: widget.argument)
                             .then(
@@ -154,7 +154,7 @@ class _AttendancePageState extends State<AttendancePage> {
                             }
                           },
                         );
-                      else
+                      } else
                         Navigator.pushNamed(context, settingRoute);
                     },
                     child: Icon(
