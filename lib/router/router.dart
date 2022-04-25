@@ -1,6 +1,8 @@
 import 'package:attendance/models/absent.dart';
+import 'package:attendance/models/attendance.dart';
 import 'package:attendance/models/user.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/ui/pages/attendance/detail.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/pages/attendance/absent.dart';
@@ -34,6 +36,13 @@ class Router {
           settings: settings,
           builder: (_) => AttendancePage(
             argument: settings.arguments as User,
+          ),
+        );
+      case detailAttendanceRoute:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => DetailAttendancePage(
+            argument: settings.arguments as Attendance,
           ),
         );
       case absentRoute:

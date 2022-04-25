@@ -186,6 +186,7 @@ class _AttendancePageState extends State<AttendancePage> {
                               _password =
                                   value.password ?? widget.argument?.password;
                             });
+                            _getData();
                           }
                         } else {
                           Navigator.pushNamed(context, settingRoute);
@@ -347,7 +348,11 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _attendances[index];
 
           return ContainerShadow(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(
+              context,
+              detailAttendanceRoute,
+              arguments: data,
+            ).then((_) => _getAttendances()),
             padding: EdgeInsets.all(12),
             child: Row(
               children: [

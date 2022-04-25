@@ -51,22 +51,16 @@ class _SettingPageState extends State<SettingPage> {
                     children: [
                       Text(
                         user?.name ?? '-',
-                        style: poppinsBlackw600.copyWith(
-                          fontSize: 16,
-                        ),
+                        style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
                       Text(
                         user?.id ?? '-',
-                        style: poppinsBlackw600.copyWith(
-                          fontSize: 12,
-                        ),
+                        style: poppinsBlackw600.copyWith(fontSize: 12),
                       ),
                       SizedBox(height: 70),
                       Text(
                         "KATA SANDI LAMA",
-                        style: poppinsBluew500.copyWith(
-                          fontSize: 15,
-                        ),
+                        style: poppinsBluew500.copyWith(fontSize: 15),
                       ),
                       SizedBox(
                         height: 5,
@@ -100,9 +94,7 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       Text(
                         "KATA SANDI BARU",
-                        style: poppinsBluew500.copyWith(
-                          fontSize: 15,
-                        ),
+                        style: poppinsBluew500.copyWith(fontSize: 15),
                       ),
                       SizedBox(height: 5),
                       TextFormField(
