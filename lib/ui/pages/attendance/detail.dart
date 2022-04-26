@@ -21,10 +21,6 @@ class DetailAttendancePage extends StatelessWidget {
             argument?.name ?? '-',
             style: poppinsBlackw600.copyWith(fontSize: 16),
           ),
-          Text(
-            argument?.nign ?? '-',
-            style: poppinsBlackw600.copyWith(fontSize: 12),
-          ),
           SizedBox(height: 40),
           Row(
             children: [
@@ -41,6 +37,10 @@ class DetailAttendancePage extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          Text(
+            argument?.locationIn ?? '-',
+            style: poppinsBlackw600.copyWith(fontSize: 14),
           ),
           BorderNetworkImage(argument?.imageUrlIn ?? '-'),
           SizedBox(height: 16),
@@ -59,6 +59,10 @@ class DetailAttendancePage extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          Text(
+            argument?.locationIn ?? '-',
+            style: poppinsBlackw600.copyWith(fontSize: 14),
           ),
           BorderNetworkImage(argument?.imageUrlOut ?? '-'),
         ],

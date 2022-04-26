@@ -3,6 +3,7 @@ import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/services/location.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/services/utils.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
@@ -62,13 +63,24 @@ class _UserHomePageState extends State<UserHomePage> {
   }
 
   void _showModal() async {
-    await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => AttendOptionModal(),
-    ).then((value) {
-      if (value != null) _attend(value);
-    });
+    try {
+      final isPermissionGranted = await LocationServices.checkPermission();
+      if (!mounted) return;
+      if (isPermissionGranted) {
+        await showModalBottomSheet<String>(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) => AttendOptionModal(),
+        ).then((value) {
+          if (value != null) _attend(value);
+        });
+      } else {
+        showSnackBar(context, "Anda belum mengaktifkan layanan Lokasi/GPS");
+      }
+    } catch (e) {
+      if (!mounted) return;
+      showSnackBar(context, e.toString());
+    }
   }
 
   void _attend(String type) async {
@@ -126,7 +138,7 @@ class _UserHomePageState extends State<UserHomePage> {
                           style: poppinsBlackw600.copyWith(fontSize: 16),
                         ),
                         Text(
-                          user?.id ?? '-',
+                          user?.nign ?? '-',
                           style: poppinsBlackw600.copyWith(fontSize: 12),
                         ),
                       ],
@@ -188,7 +200,9 @@ class _UserHomePageState extends State<UserHomePage> {
                 SizedBox(width: 32),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _showModal,
+                    onPressed: () {
+                      _showModal();
+                    },
                     child: Text("ABSEN"),
                   ),
                 )

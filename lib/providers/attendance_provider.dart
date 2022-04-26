@@ -2,6 +2,7 @@ import 'package:attendance/models/attendance.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';
+import 'package:attendance/services/location.dart';
 import 'package:attendance/services/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,11 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getAttendances({int? limit, String? id}) async {
     try {
       final response = await FirebaseService.get<List<DocumentSnapshot>>(
-          collection: Collection.Attendance, limit: limit!, query: id);
+        collection: Collection.Attendance,
+        limit: limit!,
+        filter: 'user_id',
+        query: id,
+      );
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _attendances =
@@ -76,18 +81,21 @@ class AttendanceProvider extends ChangeNotifier {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
-      final userName = prov.user?.name ?? '';
-      final id = '${userName}_${currentDate.formatddMMy()}';
+      final userId = prov.user?.id ?? '';
+      final id = '${userId}_${currentDate.formatddMMy()}';
       final imageUrl = await FirebaseService.uploadImage(file, '${id}_$type');
+      final location = await LocationServices.getCurrentLocation();
       final response = await FirebaseService.set<Attendance>(
         id: id,
         collection: Collection.Attendance,
         data: Attendance(
           id: id,
-          name: userName,
-          nign: prov.user?.id,
+          name: prov.user?.name,
+          userId: userId,
           imageUrlIn: type == 'in' ? imageUrl : _attendance?.imageUrlIn,
           imageUrlOut: type == 'out' ? imageUrl : null,
+          locationIn: type == 'in' ? location : _attendance?.locationIn,
+          locationOut: type == 'out' ? location : null,
           dateIn: type == 'in' ? currentDate : _attendance?.dateIn,
           dateOut: type == 'out' ? currentDate : null,
         ),

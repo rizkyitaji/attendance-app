@@ -55,12 +55,15 @@ class UserProvider extends ChangeNotifier {
 
   Future<String> login(String id, String password) async {
     try {
-      final response = await getUser(id);
-      if (!response.value!.exists) {
+      final response = await FirebaseService.get<List<DocumentSnapshot>>(
+          collection: Collection.Users, limit: 1, filter: 'nign', query: id);
+      final snapshots = response.value ?? [];
+      if (snapshots.isEmpty) {
         return 'NIGN Anda salah atau tidak terdaftar';
       } else {
-        if (password.compareTo(response.value!.get('password')) == 0) {
+        if (password.compareTo(snapshots[0].get('password')) == 0) {
           final pref = await SharedPreferences.getInstance();
+          _user = User.fromSnapshot(snapshots[0]);
           pref.setString('user', _user?.id ?? '');
           return 'Selamat Datang';
         } else {
