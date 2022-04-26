@@ -25,6 +25,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   void resetState() {
     _isAttend = false;
+    _attendance = null;
     _attendances = null;
     notifyListeners();
   }
@@ -50,13 +51,18 @@ class AttendanceProvider extends ChangeNotifier {
           collection: Collection.Attendance, id: id);
       if (response.value!.exists) {
         _attendance = Attendance.fromSnapshot(response.value!);
-        if (response.value?.get('date_out') != null) {
+        if (response.value?.get('date_in') == null) {
           _isAttend = false;
+        } else {
+          if (response.value?.get('date_out') == null) {
+            _isAttend = true;
+          } else {
+            _isAttend = false;
+          }
         }
-        _isAttend = true;
+      } else {
+        _attendance = null;
       }
-      _attendance = null;
-      _isAttend = false;
       notifyListeners();
     } catch (e) {
       throw e;

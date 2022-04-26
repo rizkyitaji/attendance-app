@@ -23,4 +23,6 @@ extension DateTimeExtension on DateTime {
   String formatMMMMy() => DateFormat('MMMM, y').format(this);
 
   String formathhmm() => DateFormat('hh:mm aa').format(this);
+
+  String formatMMMMddyhhmm() => DateFormat('MMMM dd, y hh:mm aa').format(this);
 }

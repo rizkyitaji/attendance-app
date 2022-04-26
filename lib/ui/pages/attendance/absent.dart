@@ -1,6 +1,8 @@
+import 'package:attendance/models/absent.dart';
 import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
@@ -9,6 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:attendance/services/utils.dart';
 
 class AbsentPage extends StatefulWidget {
+  final Absent? argument;
+
+  AbsentPage({this.argument});
+
   @override
   _AbsentPageState createState() => _AbsentPageState();
 }
@@ -18,6 +24,13 @@ class _AbsentPageState extends State<AbsentPage> {
   final _cReason = TextEditingController();
   DateTime _currentDate = DateTime.now();
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.argument?.reason != null)
+      _cReason.text = widget.argument?.reason ?? '';
+  }
+
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
@@ -25,7 +38,7 @@ class _AbsentPageState extends State<AbsentPage> {
         await prov.sendReason(context, _cReason.text.trim());
         if (!mounted) return;
         Navigator.pop(context);
-        showSnackBar(context, "Permohonan izin telah dikirim");
+        showSnackBar(context, "Pengajuan izin telah dikirim");
       } catch (e) {
         if (!mounted) return;
         showSnackBar(context, e.toString());
@@ -53,22 +66,22 @@ class _AbsentPageState extends State<AbsentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        (user?.name ?? '-').capitalize(),
-                        style: poppinsBlackw600.copyWith(
-                          fontSize: 16,
-                        ),
+                        (widget.argument?.name ?? user?.name ?? '-')
+                            .capitalize(),
+                        style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
                       Text(
-                        (user?.id ?? '-').capitalize(),
-                        style: poppinsBlackw600.copyWith(
-                          fontSize: 12,
-                        ),
+                        (widget.argument?.nign ?? user?.id ?? '-').capitalize(),
+                        style: poppinsBlackw600.copyWith(fontSize: 12),
                       )
                     ],
                   ),
-                  InkWell(
-                    onTap: () => Navigator.pushNamed(context, settingRoute),
-                    child: Icon(Icons.settings),
+                  Visibility(
+                    visible: user?.level == Level.User,
+                    child: InkWell(
+                      onTap: () => Navigator.pushNamed(context, settingRoute),
+                      child: Icon(Icons.settings),
+                    ),
                   )
                 ],
               ),
@@ -77,9 +90,7 @@ class _AbsentPageState extends State<AbsentPage> {
               ),
               Text(
                 "ALASAN TIDAK MASUK",
-                style: poppinsBlackw400.copyWith(
-                  fontSize: 15,
-                ),
+                style: poppinsBlackw400.copyWith(fontSize: 15),
               ),
               SizedBox(
                 height: 10,
@@ -88,6 +99,7 @@ class _AbsentPageState extends State<AbsentPage> {
                 key: _formKey,
                 controller: _cReason,
                 keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.done,
                 maxLines: 8,
                 validator: (value) {
                   if (value!.isEmpty) return 'Field ini harus diisi';
@@ -102,9 +114,7 @@ class _AbsentPageState extends State<AbsentPage> {
                 children: [
                   Text(
                     _currentDate.formatMMMMddy(),
-                    style: poppinsBlackw400.copyWith(
-                      fontSize: 15,
-                    ),
+                    style: poppinsBlackw400.copyWith(fontSize: 15),
                   ),
                   Text(
                     _currentDate.formathhmm(),
@@ -115,9 +125,12 @@ class _AbsentPageState extends State<AbsentPage> {
               SizedBox(
                 height: 40,
               ),
-              ElevatedButton(
-                onPressed: _send,
-                child: Text("Kirim"),
+              Visibility(
+                visible: (widget.argument?.reason ?? '').isEmpty,
+                child: ElevatedButton(
+                  onPressed: _send,
+                  child: Text("Kirim"),
+                ),
               ),
             ],
           );

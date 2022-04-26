@@ -35,136 +35,147 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: "PENGATURAN",
-      ),
-      body: Form(
-        key: _formKey,
-        child: Consumer<UserProvider>(
-          builder: (context, prov, _) {
-            final user = prov.user;
-            final password = user?.password;
+      appBar: CustomAppBar(title: "PENGATURAN"),
+      body: Column(
+        children: [
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: Consumer<UserProvider>(
+                builder: (context, prov, _) {
+                  final user = prov.user;
+                  final password = user?.password;
 
-            return ListView(
-              padding: EdgeInsets.all(24),
-              children: [
-                Text(
-                  user?.name ?? '-',
-                  style: poppinsBlackw600.copyWith(
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  user?.id ?? '-',
-                  style: poppinsBlackw600.copyWith(
-                    fontSize: 12,
-                  ),
-                ),
-                SizedBox(height: 40),
-                Text(
-                  "KATA SANDI LAMA",
-                  style: poppinsBluew500.copyWith(
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                TextFormField(
-                  obscureText: _isObscure,
-                  controller: _cOldPassword,
-                  decoration: InputDecoration(
-                    suffixIcon: InkWell(
-                      onTap: () => setState(() => _isObscure = !_isObscure),
-                      child: Icon(
-                        _isObscure ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey[400],
+                  return ListView(
+                    padding: EdgeInsets.all(24),
+                    children: [
+                      Text(
+                        user?.name ?? '-',
+                        style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) return 'Field ini harus diisi';
-                    if (value != password) return 'Kata sandi lama salah';
-                    if (value.length < 6)
-                      return 'Kata sandi minimal harus 6 karakter';
-                    return null;
-                  },
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "KATA SANDI BARU",
-                  style: poppinsBluew500.copyWith(
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(height: 5),
-                TextFormField(
-                  obscureText: _isObscure,
-                  controller: _cNewPassword1,
-                  decoration: InputDecoration(
-                    suffixIcon: InkWell(
-                      onTap: () => setState(() => _isObscure = !_isObscure),
-                      child: Icon(
-                        _isObscure ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey[400],
+                      Text(
+                        user?.id ?? '-',
+                        style: poppinsBlackw600.copyWith(fontSize: 12),
                       ),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    if (value.isNotEmpty) _formKey.currentState!.validate();
-                  },
-                  validator: (value) {
-                    if (value!.isEmpty) return 'Field ini harus diisi';
-                    if (value.length < 6)
-                      return 'Kata sandi minimal harus 6 karakter';
-                    return null;
-                  },
-                ),
-                SizedBox(height: 15),
-                Text(
-                  "ULANGI KATA SANDI BARU",
-                  style: poppinsBluew500.copyWith(
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(height: 5),
-                TextFormField(
-                  obscureText: _isObscure,
-                  controller: _cNewPassword2,
-                  decoration: InputDecoration(
-                    suffixIcon: InkWell(
-                      onTap: () => setState(() => _isObscure = !_isObscure),
-                      child: Icon(
-                        _isObscure ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey[400],
+                      SizedBox(height: 70),
+                      Text(
+                        "KATA SANDI LAMA",
+                        style: poppinsBluew500.copyWith(fontSize: 15),
                       ),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    if (value.isNotEmpty) _formKey.currentState!.validate();
-                  },
-                  validator: (value) {
-                    if (value!.isEmpty) return 'Field ini harus diisi';
-                    if (value.trim() != _cNewPassword1.text.trim())
-                      return 'Kata sandi tidak sama';
-                    if (value.length < 6)
-                      return 'Kata sandi minimal harus 6 karakter';
-                    return null;
-                  },
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                ElevatedButton(
-                  onPressed: _changePassword,
-                  child: Text('Simpan'),
-                ),
-              ],
-            );
-          },
-        ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextFormField(
+                        obscureText: _isObscure,
+                        controller: _cOldPassword,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () =>
+                                setState(() => _isObscure = !_isObscure),
+                            child: Icon(
+                              _isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) return 'Field ini harus diisi';
+                          if (value != password) return 'Kata sandi lama salah';
+                          if (value.length < 6)
+                            return 'Kata sandi minimal harus 6 karakter';
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        "KATA SANDI BARU",
+                        style: poppinsBluew500.copyWith(fontSize: 15),
+                      ),
+                      SizedBox(height: 5),
+                      TextFormField(
+                        obscureText: _isObscure,
+                        controller: _cNewPassword1,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () =>
+                                setState(() => _isObscure = !_isObscure),
+                            child: Icon(
+                              _isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty)
+                            _formKey.currentState!.validate();
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) return 'Field ini harus diisi';
+                          if (value.length < 6)
+                            return 'Kata sandi minimal harus 6 karakter';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        "ULANGI KATA SANDI BARU",
+                        style: poppinsBluew500.copyWith(
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      TextFormField(
+                        obscureText: _isObscure,
+                        controller: _cNewPassword2,
+                        textInputAction: TextInputAction.done,
+                        decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () =>
+                                setState(() => _isObscure = !_isObscure),
+                            child: Icon(
+                              _isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty)
+                            _formKey.currentState!.validate();
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) return 'Field ini harus diisi';
+                          if (value.trim() != _cNewPassword1.text.trim())
+                            return 'Kata sandi tidak sama';
+                          if (value.length < 6)
+                            return 'Kata sandi minimal harus 6 karakter';
+                          return null;
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(24, 24, 24, 40),
+            child: ElevatedButton(
+              onPressed: _changePassword,
+              child: Text('Simpan'),
+            ),
+          )
+        ],
       ),
     );
   }
