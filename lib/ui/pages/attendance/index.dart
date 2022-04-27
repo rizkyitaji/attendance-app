@@ -26,7 +26,7 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  String? _period, _attendance, _name, _nign, _password;
+  String? _period, _attendance, _name, _nign, _password, _id;
   bool _loading = false, _loadingMore = false;
   DateTime _currentDate = DateTime.now();
   final _cScroll = ScrollController();
@@ -47,8 +47,9 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   void _init() async {
+    _id = widget.argument?.id ?? '-';
     _name = widget.argument?.name ?? '-';
-    _nign = widget.argument?.id ?? '-';
+    _nign = widget.argument?.nign ?? '-';
     _password = widget.argument?.password ?? '-';
     _cScroll.addListener(_scrollListener);
 
@@ -172,7 +173,8 @@ class _AttendancePageState extends State<AttendancePage> {
                             context,
                             profileRoute,
                             arguments: User(
-                              id: _nign,
+                              id: _id,
+                              nign: _nign,
                               name: _name,
                               password: _password,
                             ),
@@ -181,8 +183,9 @@ class _AttendancePageState extends State<AttendancePage> {
 
                           if (value != null) {
                             setState(() {
+                              _id = value.id ?? widget.argument?.id;
                               _name = value.name ?? widget.argument?.name;
-                              _nign = value.id ?? widget.argument?.id;
+                              _nign = value.nign ?? widget.argument?.nign;
                               _password =
                                   value.password ?? widget.argument?.password;
                             });

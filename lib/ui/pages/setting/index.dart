@@ -21,7 +21,7 @@ class _SettingPageState extends State<SettingPage> {
     final prov = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       try {
-        await prov.update(_cNewPassword2.text.trim());
+        await prov.updateUser(newPassword: _cNewPassword2.text.trim());
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, "Kata sandi berhasil diubah");
@@ -54,7 +54,7 @@ class _SettingPageState extends State<SettingPage> {
                         style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
                       Text(
-                        user?.id ?? '-',
+                        user?.nign ?? '-',
                         style: poppinsBlackw600.copyWith(fontSize: 12),
                       ),
                       SizedBox(height: 70),

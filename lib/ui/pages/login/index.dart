@@ -36,11 +36,9 @@ class _LoginPageState extends State<LoginPage> {
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, result);
-        print("Berhasil");
         if (result == 'Selamat Datang')
           Navigator.pushReplacementNamed(context, homeRoute);
       } catch (e) {
-        print("Gagal");
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, e.toString());

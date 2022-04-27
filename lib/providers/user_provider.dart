@@ -101,8 +101,8 @@ class UserProvider extends ChangeNotifier {
         collection: Collection.Users,
         data: User(
           id: _user?.id,
-          name: user?.name,
-          level: user?.level,
+          name: _user?.name,
+          level: _user?.level,
           password: password,
         ),
       );
@@ -113,18 +113,36 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUser(String id, String name, String newPassword) async {
+  Future<void> updateUser(
+      {String? id, String? nign, String? name, String? newPassword}) async {
     try {
-      await FirebaseService.set<User>(
-        id: id,
-        collection: Collection.Users,
-        data: User(
+      if (nign == null && name == null) {
+        final response = await FirebaseService.set<User>(
+          id: _user?.id,
+          collection: Collection.Users,
+          data: User(
+            id: _user?.id,
+            nign: _user?.nign,
+            name: user?.name,
+            level: user?.level,
+            password: newPassword,
+          ),
+        );
+        _user = response;
+        notifyListeners();
+      } else {
+        await FirebaseService.set<User>(
+          collection: Collection.Users,
           id: id,
-          name: name,
-          level: Level.User,
-          password: newPassword,
-        ),
-      );
+          data: User(
+            id: id,
+            nign: nign,
+            name: name,
+            level: Level.User,
+            password: newPassword,
+          ),
+        );
+      }
     } catch (e) {
       throw e;
     }

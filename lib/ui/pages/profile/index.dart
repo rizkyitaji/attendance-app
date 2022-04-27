@@ -28,20 +28,22 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _cName.text = widget.argument?.name ?? '';
-    _cNign.text = widget.argument?.id ?? '';
+    _cNign.text = widget.argument?.nign ?? '';
     _cPassword.text = widget.argument?.password ?? '';
   }
 
   void _setData() async {
     final prov = Provider.of<UserProvider>(context, listen: false);
+    final _id = widget.argument?.id;
     final _nign = _cNign.text.trim();
     final _name = _cName.text.trim();
     final _password = _cPassword.text.trim();
-    final user = User(id: _nign, name: _name, password: _password);
+    final user = User(nign: _nign, name: _name, password: _password);
 
     if (_formKey.currentState!.validate()) {
       try {
-        await prov.updateUser(_nign, _name, _password);
+        await prov.updateUser(
+            id: _id, nign: _nign, name: _name, newPassword: _password);
         if (!mounted) return;
         Navigator.pop(context, user);
         showSnackBar(context, "Berhasil");
@@ -81,6 +83,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextFormField(
                     controller: _cName,
                     textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Field ini harus diisi';
+
+                      return null;
+                    },
                   ),
                   SizedBox(
                     height: 15,
@@ -94,7 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   TextFormField(
                     controller: _cNign,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Field ini harus diisi';
+                      return null;
+                    },
                   ),
                   SizedBox(
                     height: 15,
@@ -112,6 +124,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     textInputAction: TextInputAction.done,
                     onChanged: (value) {
                       if (value.isNotEmpty) _formKey.currentState!.validate();
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Field ini harus diisi';
+                      if (value.length < 6)
+                        return 'Kata sandi minimal harus 6 karakter';
+                      return null;
                     },
                     decoration: InputDecoration(
                       suffixIcon: InkWell(
