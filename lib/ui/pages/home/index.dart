@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
   Future<Response<User?>> _getUser(BuildContext context) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     final pref = await SharedPreferences.getInstance();
-    final id = pref.getString('user') ?? '';
+    final id = pref.getString('id') ?? '';
     if (prov.user == null) {
       try {
         await prov.getUser(id);

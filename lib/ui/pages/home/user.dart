@@ -12,6 +12,7 @@ import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'widgets/attend_option.dart';
 import 'widgets/attend_success.dart';
@@ -32,12 +33,26 @@ class _UserHomePageState extends State<UserHomePage> {
 
   Future<void> _getData() async {
     final prov = Provider.of<UserProvider>(context, listen: false);
-    final id = '${prov.user?.name}_${_currentDate.formatddMMy()}';
+    final id = '${prov.user?.id}_${_currentDate.formatddMMy()}';
 
     await Future.delayed(Duration(milliseconds: 500)).then((_) {
+      _getUser();
       _getDailyAttendance(id);
       _getAbsent(id);
     });
+  }
+
+  Future<void> _getUser() async {
+    final prov = Provider.of<UserProvider>(context, listen: false);
+    final pref = await SharedPreferences.getInstance();
+    final id = pref.getString('id') ?? '';
+    try {
+      await prov.getUser(id);
+      if (!mounted) return;
+    } catch (e) {
+      if (!mounted) return;
+      showSnackBar(context, e.toString());
+    }
   }
 
   Future<void> _getDailyAttendance(String id) async {

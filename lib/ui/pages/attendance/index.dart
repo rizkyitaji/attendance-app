@@ -48,7 +48,7 @@ class _AttendancePageState extends State<AttendancePage> {
 
   void _init() async {
     _name = widget.argument?.name ?? '-';
-    _nign = widget.argument?.id ?? '-';
+    _nign = widget.argument?.nign ?? '-';
     _password = widget.argument?.password ?? '-';
     _cScroll.addListener(_scrollListener);
 
@@ -182,7 +182,7 @@ class _AttendancePageState extends State<AttendancePage> {
                           if (value != null) {
                             setState(() {
                               _name = value.name ?? widget.argument?.name;
-                              _nign = value.id ?? widget.argument?.id;
+                              _nign = value.nign ?? widget.argument?.nign;
                               _password =
                                   value.password ?? widget.argument?.password;
                             });
@@ -348,11 +348,15 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _attendances[index];
 
           return ContainerShadow(
-            onTap: () => Navigator.pushNamed(
-              context,
-              detailAttendanceRoute,
-              arguments: data,
-            ).then((_) => _getAttendances()),
+            onTap: () {
+              final prov = Provider.of<UserProvider>(context, listen: false);
+              prov.nign = _nign;
+              Navigator.pushNamed(
+                context,
+                detailAttendanceRoute,
+                arguments: data,
+              ).then((_) => _getAttendances());
+            },
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
@@ -419,9 +423,12 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _absents[index];
 
           return ContainerShadow(
-            onTap: () =>
-                Navigator.pushNamed(context, absentRoute, arguments: data)
-                    .then((_) => _getAbsents()),
+            onTap: () {
+              final prov = Provider.of<UserProvider>(context, listen: false);
+              prov.nign = _nign;
+              Navigator.pushNamed(context, absentRoute, arguments: data)
+                  .then((_) => _getAbsents());
+            },
             padding: EdgeInsets.all(12),
             child: Row(
               children: [

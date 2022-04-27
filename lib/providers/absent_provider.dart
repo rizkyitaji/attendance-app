@@ -41,7 +41,11 @@ class AbsentProvider extends ChangeNotifier {
   Future<void> getAbsents({int? limit, String? id}) async {
     try {
       final response = await FirebaseService.get<List<DocumentSnapshot>>(
-          collection: Collection.Absent, limit: limit!, query: id);
+        collection: Collection.Absent,
+        limit: limit!,
+        filter: 'user_id',
+        query: id,
+      );
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _absents = snapshots.map((e) => Absent.fromSnapshot(e)).toList();
@@ -59,15 +63,15 @@ class AbsentProvider extends ChangeNotifier {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
-      final userName = prov.user?.name;
-      final id = '${userName}_${currentDate.formatddMMy()}';
+      final userId = prov.user?.id;
+      final id = '${userId}_${currentDate.formatddMMy()}';
       final response = await FirebaseService.set<Absent>(
         id: id,
         collection: Collection.Absent,
         data: Absent(
           id: id,
-          name: userName,
-          nign: prov.user?.id,
+          name: prov.user?.name,
+          userId: userId,
           reason: reason,
           date: currentDate,
         ),

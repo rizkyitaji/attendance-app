@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _cName.text = widget.argument?.name ?? '';
-    _cNign.text = widget.argument?.id ?? '';
+    _cNign.text = widget.argument?.nign ?? '';
     _cPassword.text = widget.argument?.password ?? '';
   }
 

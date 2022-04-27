@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RootPage extends StatelessWidget {
   Future<void> _navigate(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
-    final isLogin = pref.getString('user') ?? '';
+    final isLogin = pref.getString('id') ?? '';
     Future.delayed(Duration(seconds: 2)).then((_) {
       if (isLogin.isNotEmpty) {
         Navigator.pushReplacementNamed(context, homeRoute);

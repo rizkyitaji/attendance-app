@@ -54,7 +54,7 @@ class _SettingPageState extends State<SettingPage> {
                         style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
                       Text(
-                        user?.id ?? '-',
+                        user?.nign ?? '-',
                         style: poppinsBlackw600.copyWith(fontSize: 12),
                       ),
                       SizedBox(height: 70),
