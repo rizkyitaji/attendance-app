@@ -351,11 +351,15 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _attendances[index];
 
           return ContainerShadow(
-            onTap: () => Navigator.pushNamed(
-              context,
-              detailAttendanceRoute,
-              arguments: data,
-            ).then((_) => _getAttendances()),
+            onTap: () {
+              final prov = Provider.of<UserProvider>(context, listen: false);
+              prov.nign = _nign;
+              Navigator.pushNamed(
+                context,
+                detailAttendanceRoute,
+                arguments: data,
+              ).then((_) => _getAttendances());
+            },
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
@@ -422,9 +426,12 @@ class _AttendancePageState extends State<AttendancePage> {
           final data = _absents[index];
 
           return ContainerShadow(
-            onTap: () =>
-                Navigator.pushNamed(context, absentRoute, arguments: data)
-                    .then((_) => _getAbsents()),
+            onTap: () {
+              final prov = Provider.of<UserProvider>(context, listen: false);
+              prov.nign = _nign;
+              Navigator.pushNamed(context, absentRoute, arguments: data)
+                  .then((_) => _getAbsents());
+            },
             padding: EdgeInsets.all(12),
             child: Row(
               children: [

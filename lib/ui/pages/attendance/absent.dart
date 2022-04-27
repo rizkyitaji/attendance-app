@@ -71,7 +71,7 @@ class _AbsentPageState extends State<AbsentPage> {
                         style: poppinsBlackw600.copyWith(fontSize: 16),
                       ),
                       Text(
-                        (widget.argument?.nign ?? user?.id ?? '-').capitalize(),
+                        (prov.nign ?? user?.nign ?? '-').capitalize(),
                         style: poppinsBlackw600.copyWith(fontSize: 12),
                       )
                     ],

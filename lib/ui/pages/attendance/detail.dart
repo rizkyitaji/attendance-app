@@ -1,9 +1,11 @@
 import 'package:attendance/models/attendance.dart';
+import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/services/utils.dart';
 import 'package:attendance/ui/pages/attendance/widgets/border_network_image.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DetailAttendancePage extends StatelessWidget {
   final Attendance? argument;
@@ -21,9 +23,11 @@ class DetailAttendancePage extends StatelessWidget {
             argument?.name ?? '-',
             style: poppinsBlackw600.copyWith(fontSize: 16),
           ),
-          Text(
-            argument?.nign ?? '-',
-            style: poppinsBlackw600.copyWith(fontSize: 12),
+          Consumer<UserProvider>(
+            builder: (context, value, _) => Text(
+              value.nign ?? '-',
+              style: poppinsBlackw600.copyWith(fontSize: 12),
+            ),
           ),
           SizedBox(height: 40),
           Row(
@@ -42,6 +46,10 @@ class DetailAttendancePage extends StatelessWidget {
               ),
             ],
           ),
+          Text(
+            'Alamat : ${argument?.locationIn ?? '-'}',
+            style: poppinsBlackw600.copyWith(fontSize: 14),
+          ),
           BorderNetworkImage(argument?.imageUrlIn ?? '-'),
           SizedBox(height: 16),
           Row(
@@ -59,6 +67,10 @@ class DetailAttendancePage extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          Text(
+            'Alamat : ${argument?.locationOut ?? '-'}',
+            style: poppinsBlackw600.copyWith(fontSize: 14),
           ),
           BorderNetworkImage(argument?.imageUrlOut ?? '-'),
         ],

@@ -81,7 +81,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     if (value.isNotEmpty) {
       _users = users.where((e) {
         return (e.name ?? '').toLowerCase().contains(value.toLowerCase()) ||
-            (e.id ?? '').contains(value);
+            (e.nign ?? '').contains(value);
       }).toList();
     } else {
       _users = users;
@@ -188,7 +188,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    data.id ?? '-',
+                                    data.nign ?? '-',
                                     style:
                                         poppinsBlackw600.copyWith(fontSize: 12),
                                   ),

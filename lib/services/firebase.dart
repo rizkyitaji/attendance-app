@@ -47,6 +47,7 @@ class FirebaseService {
   static Future<Response<T>> get<T>({
     required Collection collection,
     int limit = 10,
+    String? filter,
     String? query,
     String? id,
   }) async {
@@ -56,10 +57,10 @@ class FirebaseService {
         result = await ref(collection).doc(id).get();
       } else {
         late QuerySnapshot querySnapshot;
-        if (query != null) {
+        if (filter != null) {
           querySnapshot = await ref(collection)
               .limit(limit)
-              .where('nign', isEqualTo: query)
+              .where(filter, isEqualTo: query)
               .get();
         } else {
           querySnapshot = await ref(collection).limit(limit).get();

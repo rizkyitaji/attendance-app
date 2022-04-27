@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -27,7 +26,7 @@ class LocationServices {
     return serviceEnabled;
   }
 
-  static Future<String?> determinePosition(String name) async {
+  static Future<String?> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemark =

@@ -81,6 +81,10 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ),
                         ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty)
+                            _formKey.currentState!.validate();
+                        },
                         validator: (value) {
                           if (value!.isEmpty) return 'Field ini harus diisi';
                           if (value != password) return 'Kata sandi lama salah';

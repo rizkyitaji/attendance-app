@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Absent {
-  String? id, name, nign, reason;
+  String? id, name, userId, reason;
   DateTime? date;
 
   Absent({
     this.id,
     this.name,
-    this.nign,
+    this.userId,
     this.reason,
     this.date,
   });
@@ -20,7 +20,7 @@ class Absent {
   Absent.fromMap(Map<String, dynamic> map) {
     id = map['id'];
     name = map['name'];
-    nign = map['nign'];
+    userId = map['user_id'];
     reason = map['reason'];
     date = DateTime.fromMillisecondsSinceEpoch(map['date']);
   }
@@ -29,7 +29,7 @@ class Absent {
     return {
       'id': id,
       'name': name,
-      'nign': nign,
+      'user_id': userId,
       'reason': reason,
       'date': date?.millisecondsSinceEpoch,
     };

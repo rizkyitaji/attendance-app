@@ -33,7 +33,11 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getAttendances({int? limit, String? id}) async {
     try {
       final response = await FirebaseService.get<List<DocumentSnapshot>>(
-          collection: Collection.Attendance, limit: limit!, query: id);
+        collection: Collection.Attendance,
+        limit: limit!,
+        filter: 'user_id',
+        query: id,
+      );
       final snapshots = response.value ?? [];
       if (snapshots.isNotEmpty) {
         _attendances =
@@ -77,17 +81,17 @@ class AttendanceProvider extends ChangeNotifier {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
-      final userName = prov.user?.id ?? '';
-      final id = '${userName}_${currentDate.formatddMMy()}';
+      final userId = prov.user?.id ?? '';
+      final id = '${userId}_${currentDate.formatddMMy()}';
       final imageUrl = await FirebaseService.uploadImage(file, '${id}_$type');
-      final location = await LocationServices.determinePosition('$type');
+      final location = await LocationServices.getCurrentLocation();
       final response = await FirebaseService.set<Attendance>(
         id: id,
         collection: Collection.Attendance,
         data: Attendance(
           id: id,
           name: prov.user?.name,
-          nign: prov.user?.nign,
+          userId: userId,
           imageUrlIn: type == 'in' ? imageUrl : _attendance?.imageUrlIn,
           imageUrlOut: type == 'out' ? imageUrl : null,
           locationIn: type == 'in' ? location : _attendance?.locationIn,
