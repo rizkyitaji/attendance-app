@@ -73,6 +73,8 @@ class AttendanceProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> getLocation() async {}
+
   Future<void> attend(
     BuildContext context,
     XFile file,
