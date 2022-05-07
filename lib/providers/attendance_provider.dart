@@ -66,6 +66,7 @@ class AttendanceProvider extends ChangeNotifier {
         }
       } else {
         _attendance = null;
+        _isAttend = false;
       }
       notifyListeners();
     } catch (e) {
