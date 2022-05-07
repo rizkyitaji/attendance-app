@@ -21,7 +21,7 @@ class _SettingPageState extends State<SettingPage> {
     final prov = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       try {
-        await prov.update(_cNewPassword2.text.trim());
+        await prov.updateUser(newPassword: _cNewPassword2.text.trim());
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, "Kata sandi berhasil diubah");
@@ -81,6 +81,10 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ),
                         ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty)
+                            _formKey.currentState!.validate();
+                        },
                         validator: (value) {
                           if (value!.isEmpty) return 'Field ini harus diisi';
                           if (value != password) return 'Kata sandi lama salah';
