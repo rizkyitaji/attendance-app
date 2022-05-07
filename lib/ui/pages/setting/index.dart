@@ -21,7 +21,7 @@ class _SettingPageState extends State<SettingPage> {
     final prov = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       try {
-        await prov.updateUser(newPassword: _cNewPassword2.text.trim());
+        await prov.setUser(password: _cNewPassword2.text.trim());
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, "Kata sandi berhasil diubah");

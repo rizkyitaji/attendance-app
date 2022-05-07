@@ -1,38 +1,27 @@
-import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices {
-  static Future<bool> checkActivatedLocation() async {
-    bool serviceEnabled;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (serviceEnabled) {
-      print("GPS sudah Aktif");
-      return true;
-    } else {
-      print("GPS belum aktif");
-      return false;
-    }
+  static Future<bool> checkService() async {
+    bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    return isServiceEnabled;
   }
 
-  static Future<bool> checkForPermission() async {
-    LocationPermission permission;
-
-    permission = await Geolocator.checkPermission();
-    print("permission start");
+  static Future<bool> checkPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      print("permission denied 1");
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        return false;
-      }
-
       if (permission == LocationPermission.denied) {
-        print("permission denied 2");
         return false;
+      } else if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+        return false;
+      } else {
+        return true;
       }
+    } else {
+      return true;
     }
-    return true;
   }
 
   static Future<String?> getCurrentLocation() async {

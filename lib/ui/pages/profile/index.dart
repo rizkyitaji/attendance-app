@@ -42,8 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (_formKey.currentState!.validate()) {
       try {
-        await prov.updateUser(
-            id: _id, nign: _nign, name: _name, newPassword: _password);
+        await prov.setUser(
+            id: _id, nign: _nign, name: _name, password: _password);
         if (!mounted) return;
         Navigator.pop(context, user);
         showSnackBar(context, "Berhasil");

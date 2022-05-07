@@ -2,7 +2,7 @@ import 'package:attendance/services/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-class LocationOption extends StatelessWidget {
+class LocationServiceModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,9 +34,7 @@ class LocationOption extends StatelessWidget {
           SizedBox(height: 16),
           Divider(height: 0),
           ListTile(
-            onTap: () {
-              Geolocator.openLocationSettings();
-            },
+            onTap: () => Geolocator.openLocationSettings(),
             minLeadingWidth: 12,
             leading: Icon(Icons.gps_fixed),
             title: Text(

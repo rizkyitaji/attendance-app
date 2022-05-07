@@ -6,7 +6,7 @@ import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/location.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/services/utils.dart';
-import 'package:attendance/ui/pages/home/widgets/location_option.dart';
+import 'package:attendance/ui/pages/home/widgets/location_service.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app_settings/app_settings.dart';
 import 'widgets/attend_option.dart';
 import 'widgets/attend_success.dart';
 
@@ -35,15 +34,12 @@ class _UserHomePageState extends State<UserHomePage> {
   Future<void> _getData() async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     final id = '${prov.user?.id}_${_currentDate.formatddMMy()}';
-    final isPermissionGranted = await LocationServices.checkForPermission();
+    await LocationServices.checkPermission();
 
     await Future.delayed(Duration(milliseconds: 500)).then((_) {
       _getUser();
       _getDailyAttendance(id);
       _getAbsent(id);
-      if (isPermissionGranted) {
-        LocationServices.checkActivatedLocation();
-      }
     });
   }
 
@@ -84,11 +80,11 @@ class _UserHomePageState extends State<UserHomePage> {
 
   void _showModal() async {
     try {
-      final locationActivated = await LocationServices.checkActivatedLocation();
-      final isPermissionGranted = await LocationServices.checkForPermission();
+      final isServiceEnabled = await LocationServices.checkService();
+      final isPermissionGranted = await LocationServices.checkPermission();
       if (!mounted) return;
       if (isPermissionGranted) {
-        if (locationActivated) {
+        if (isServiceEnabled) {
           await showModalBottomSheet<String>(
             context: context,
             backgroundColor: Colors.transparent,
@@ -98,7 +94,10 @@ class _UserHomePageState extends State<UserHomePage> {
           });
         } else {
           await showModalBottomSheet(
-              context: context, builder: (context) => LocationOption());
+            context: context,
+            backgroundColor: Colors.transparent,
+            builder: (context) => LocationServiceModal(),
+          );
         }
       }
     } catch (e) {
