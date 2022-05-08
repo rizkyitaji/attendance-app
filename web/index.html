@@ -26,7 +26,7 @@
   <meta name="apple-mobile-web-app-title" content="attendance">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <title>attendance</title>
+  <title>Sistem Absensi Guru</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -96,6 +96,23 @@
       // Service workers not supported. Just drop the <script> tag.
       loadMainDartJs();
     }
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDf7TmkYnENtzK7ur4uCoQdXrOSUW7_dBY",
+      authDomain: "sdn-sukakerta-03.firebaseapp.com",
+      projectId: "sdn-sukakerta-03",
+      storageBucket: "sdn-sukakerta-03.appspot.com",
+      messagingSenderId: "839385234241",
+      appId: "1:839385234241:web:a387327c8f7992c5a2ffc0",
+      measurementId: "G-Y83KX13012"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
   </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:attendance/providers/absent_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,19 +12,7 @@ import 'services/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: Platform.isAndroid
-        ? null
-        : FirebaseOptions(
-            apiKey: "AIzaSyDf7TmkYnENtzK7ur4uCoQdXrOSUW7_dBY",
-            authDomain: "sdn-sukakerta-03.firebaseapp.com",
-            appId: "1:839385234241:web:a387327c8f7992c5a2ffc0",
-            storageBucket: "sdn-sukakerta-03.appspot.com",
-            messagingSenderId: "839385234241",
-            projectId: "sdn-sukakerta-03",
-            measurementId: "G-Y83KX13012",
-          ),
-  );
+  await Firebase.initializeApp();
   initializeDateFormatting();
   runApp(MyApp());
 }
