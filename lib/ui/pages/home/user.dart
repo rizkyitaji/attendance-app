@@ -3,14 +3,16 @@ import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/attendance_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
+import 'package:attendance/services/assets.dart';
 import 'package:attendance/services/location.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/services/utils.dart';
-import 'package:attendance/ui/pages/home/widgets/location_service.dart';
+import 'package:attendance/ui/pages/home/widgets/location.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,7 +36,7 @@ class _UserHomePageState extends State<UserHomePage> {
   Future<void> _getData() async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     final id = '${prov.user?.id}_${_currentDate.formatddMMy()}';
-    await LocationServices.checkPermission();
+    await LocationServices.checkPermission(context);
 
     await Future.delayed(Duration(milliseconds: 500)).then((_) {
       _getUser();
@@ -81,7 +83,8 @@ class _UserHomePageState extends State<UserHomePage> {
   void _showModal() async {
     try {
       final isServiceEnabled = await LocationServices.checkService();
-      final isPermissionGranted = await LocationServices.checkPermission();
+      final isPermissionGranted =
+          await LocationServices.checkPermission(context);
       if (!mounted) return;
       if (isPermissionGranted) {
         if (isServiceEnabled) {
@@ -96,7 +99,11 @@ class _UserHomePageState extends State<UserHomePage> {
           await showModalBottomSheet(
             context: context,
             backgroundColor: Colors.transparent,
-            builder: (context) => LocationServiceModal(),
+            builder: (context) => LocationModal(
+              asset: illustrationSwitch,
+              description: 'Aktifkan layanan GPS Anda sebelum melakukan absen',
+              onTap: () => Geolocator.openLocationSettings(),
+            ),
           );
         }
       }

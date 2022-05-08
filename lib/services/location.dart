@@ -1,3 +1,6 @@
+import 'package:attendance/services/assets.dart';
+import 'package:attendance/ui/pages/home/widgets/location.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -7,14 +10,22 @@ class LocationServices {
     return isServiceEnabled;
   }
 
-  static Future<bool> checkPermission() async {
+  static Future<bool> checkPermission(BuildContext context) async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return false;
       } else if (permission == LocationPermission.deniedForever) {
-        await Geolocator.openAppSettings();
+        await showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) => LocationModal(
+            asset: illustrationLocation,
+            description: 'Izinkan kami untuk mengakses lokasi Anda',
+            onTap: () => Geolocator.openAppSettings(),
+          ),
+        );
         return false;
       } else {
         return true;
