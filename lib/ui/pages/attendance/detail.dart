@@ -14,6 +14,11 @@ class DetailAttendancePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dateIn =
+        argument?.dateIn != null ? argument?.dateIn?.formatMMMMddyhhmm() : '';
+    final dateOut =
+        argument?.dateOut != null ? argument?.dateOut?.formatMMMMddyhhmm() : '';
+
     return Scaffold(
       appBar: CustomAppBar(title: 'Absensi'),
       body: ListView(
@@ -32,45 +37,81 @@ class DetailAttendancePage extends StatelessWidget {
           SizedBox(height: 40),
           Row(
             children: [
-              Text(
-                'Absen Masuk :',
-                style: poppinsBlackw600.copyWith(fontSize: 14),
-              ),
-              Spacer(),
-              Visibility(
-                visible: argument?.dateIn != null,
+              SizedBox(
+                width: 120,
                 child: Text(
-                  argument!.dateIn!.formatMMMMddyhhmm(),
+                  'Absen Masuk',
                   style: poppinsBlackw600.copyWith(fontSize: 14),
                 ),
+              ),
+              Text(
+                ':\t\t',
+                style: poppinsBlackw600.copyWith(fontSize: 14),
+              ),
+              Text(
+                dateIn!,
+                style: poppinsBlackw400.copyWith(fontSize: 14),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(
+                  'Alamat',
+                  style: poppinsBlackw600.copyWith(fontSize: 14),
+                ),
+              ),
+              Text(
+                ':',
+                style: poppinsBlackw600.copyWith(fontSize: 14),
               ),
             ],
           ),
           Text(
-            'Alamat : ${argument?.locationIn ?? '-'}',
-            style: poppinsBlackw600.copyWith(fontSize: 14),
+            argument?.locationIn ?? '',
+            style: poppinsBlackw400.copyWith(fontSize: 14),
           ),
           BorderNetworkImage(argument?.imageUrlIn ?? '-'),
           SizedBox(height: 16),
           Row(
             children: [
-              Text(
-                'Absen Pulang :',
-                style: poppinsBlackw600.copyWith(fontSize: 14),
-              ),
-              Spacer(),
-              Visibility(
-                visible: argument?.dateOut != null,
+              SizedBox(
+                width: 120,
                 child: Text(
-                  argument!.dateOut!.formatMMMMddyhhmm(),
+                  'Absen Pulang',
                   style: poppinsBlackw600.copyWith(fontSize: 14),
                 ),
+              ),
+              Text(
+                ':\t\t',
+                style: poppinsBlackw600.copyWith(fontSize: 14),
+              ),
+              Text(
+                dateOut!,
+                style: poppinsBlackw400.copyWith(fontSize: 14),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(
+                  'Alamat',
+                  style: poppinsBlackw600.copyWith(fontSize: 14),
+                ),
+              ),
+              Text(
+                ':',
+                style: poppinsBlackw600.copyWith(fontSize: 14),
               ),
             ],
           ),
           Text(
-            'Alamat : ${argument?.locationOut ?? '-'}',
-            style: poppinsBlackw600.copyWith(fontSize: 14),
+            argument?.locationOut ?? '',
+            style: poppinsBlackw400.copyWith(fontSize: 14),
           ),
           BorderNetworkImage(argument?.imageUrlOut ?? '-'),
         ],
