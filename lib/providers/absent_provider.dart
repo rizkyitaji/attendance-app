@@ -4,6 +4,7 @@ import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:attendance/services/utils.dart';
 
@@ -57,14 +58,13 @@ class AbsentProvider extends ChangeNotifier {
   }
 
   Future<void> sendReason(
-    BuildContext context,
-    String reason,
-  ) async {
+      BuildContext context, String reason, String file) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
       final userId = prov.user?.id;
       final id = '${userId}_${currentDate.formatddMMy()}';
+      final imageReason = file;
       final response = await FirebaseService.set<Absent>(
         id: id,
         collection: Collection.Absent,
@@ -73,6 +73,7 @@ class AbsentProvider extends ChangeNotifier {
           name: prov.user?.name,
           userId: userId,
           reason: reason,
+          imageReason: imageReason,
           date: currentDate,
         ),
       );

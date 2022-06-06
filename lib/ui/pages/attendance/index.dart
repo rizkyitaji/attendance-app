@@ -430,7 +430,9 @@ class _AttendancePageState extends State<AttendancePage> {
               final prov = Provider.of<UserProvider>(context, listen: false);
               prov.nign = _nign;
               Navigator.pushNamed(context, absentRoute, arguments: data)
-                  .then((_) => _getAbsents());
+                  .then((_) {
+                return _getAbsents();
+              });
             },
             padding: EdgeInsets.all(12),
             child: Row(

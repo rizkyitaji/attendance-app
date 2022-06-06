@@ -3,10 +3,14 @@ import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/enums.dart';
+import 'package:attendance/services/firebase.dart';
 import 'package:attendance/services/themes.dart';
+import 'package:attendance/ui/pages/attendance/widgets/border_network_image.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:attendance/services/utils.dart';
 
@@ -23,19 +27,41 @@ class _AbsentPageState extends State<AbsentPage> {
   final _formKey = GlobalKey<FormFieldState>();
   final _cReason = TextEditingController();
   DateTime _currentDate = DateTime.now();
+  String? imageReason;
 
   @override
   void initState() {
     super.initState();
     if (widget.argument?.reason != null)
       _cReason.text = widget.argument?.reason ?? '';
+    if (widget.argument?.imageReason != null)
+      imageReason = widget.argument?.imageReason ?? '';
+  }
+
+  Future<void> _uploadReason() async {
+    final prov = Provider.of<UserProvider>(context, listen: false);
+    try {
+      final currentDate = DateTime.now();
+      final userId = prov.user?.id;
+      final id = '${userId}_${currentDate.formatddMMy()}';
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (!mounted) return;
+      if (image != null) {
+        imageReason = await FirebaseService.uploadImage(image, id);
+      }
+      setState(() {});
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
-    if (_formKey.currentState!.validate()) {
+    final file = imageReason ?? '';
+    final reason = _cReason.text.trim();
+    if (_formKey.currentState!.validate() && file.isNotEmpty) {
       try {
-        await prov.sendReason(context, _cReason.text.trim());
+        await prov.sendReason(context, reason, file);
         if (!mounted) return;
         Navigator.pop(context);
         showSnackBar(context, "Pengajuan izin telah dikirim");
@@ -43,6 +69,8 @@ class _AbsentPageState extends State<AbsentPage> {
         if (!mounted) return;
         showSnackBar(context, e.toString());
       }
+    } else {
+      return showSnackBar(context, "Unggah bukti izin");
     }
   }
 
@@ -96,6 +124,7 @@ class _AbsentPageState extends State<AbsentPage> {
                 height: 10,
               ),
               TextFormField(
+                readOnly: widget.argument!.reason != null ? true : false,
                 key: _formKey,
                 controller: _cReason,
                 keyboardType: TextInputType.multiline,
@@ -105,6 +134,51 @@ class _AbsentPageState extends State<AbsentPage> {
                   if (value!.isEmpty) return 'Field ini harus diisi';
                   return null;
                 },
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                decoration: BoxDecoration(border: Border.all(color: blue)),
+                child: (imageReason == null)
+                    ? InkWell(
+                        onTap: _uploadReason,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.camera_alt,
+                              size: 60,
+                              color: black.withOpacity(.3),
+                            ),
+                            Text(
+                              "Unggah Foto",
+                              style: TextStyle(color: black.withOpacity(.3)),
+                            ),
+                          ],
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              contentPadding: EdgeInsets.zero,
+                              content: Image.network(
+                                imageReason ?? '',
+                              ),
+                            ),
+                          );
+                        },
+                        child: Image.network(
+                          imageReason ?? '',
+                          width: MediaQuery.of(context).size.width,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
               ),
               SizedBox(
                 height: 15,
