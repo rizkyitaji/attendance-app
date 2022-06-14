@@ -58,13 +58,13 @@ class AbsentProvider extends ChangeNotifier {
   }
 
   Future<void> sendReason(
-      BuildContext context, String reason, String file) async {
+      BuildContext context, String reason, XFile file) async {
     final prov = Provider.of<UserProvider>(context, listen: false);
     try {
       final currentDate = DateTime.now();
       final userId = prov.user?.id;
       final id = '${userId}_${currentDate.formatddMMy()}';
-      final imageReason = file;
+      final imageReason = await FirebaseService.uploadImage(file, id);
       final response = await FirebaseService.set<Absent>(
         id: id,
         collection: Collection.Absent,

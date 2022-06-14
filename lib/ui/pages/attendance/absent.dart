@@ -1,14 +1,14 @@
+import 'dart:io';
+
 import 'package:attendance/models/absent.dart';
 import 'package:attendance/providers/absent_provider.dart';
 import 'package:attendance/providers/user_provider.dart';
 import 'package:attendance/router/constants.dart';
 import 'package:attendance/services/enums.dart';
-import 'package:attendance/services/firebase.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/ui/pages/attendance/widgets/border_network_image.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,7 @@ class _AbsentPageState extends State<AbsentPage> {
   final _formKey = GlobalKey<FormFieldState>();
   final _cReason = TextEditingController();
   DateTime _currentDate = DateTime.now();
-  String? imageReason;
+  String? _imageReason;
 
   @override
   void initState() {
@@ -35,31 +35,22 @@ class _AbsentPageState extends State<AbsentPage> {
     if (widget.argument?.reason != null)
       _cReason.text = widget.argument?.reason ?? '';
     if (widget.argument?.imageReason != null)
-      imageReason = widget.argument?.imageReason ?? '';
+      _imageReason = widget.argument?.imageReason ?? '';
   }
 
   Future<void> _uploadReason() async {
-    final prov = Provider.of<UserProvider>(context, listen: false);
-    try {
-      final currentDate = DateTime.now();
-      final userId = prov.user?.id;
-      final id = '${userId}_${currentDate.formatddMMy()}';
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (!mounted) return;
-      if (image != null) {
-        imageReason = await FirebaseService.uploadImage(image, id);
-      }
-      setState(() {});
-    } catch (e) {
-      showSnackBar(context, e.toString());
-    }
+    final imageFile = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _imageReason = imageFile?.path ?? '';
+    });
   }
 
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
-    final file = imageReason ?? '';
+    final file = XFile(_imageReason ?? '');
     final reason = _cReason.text.trim();
-    if (_formKey.currentState!.validate() && file.isNotEmpty) {
+    if (_formKey.currentState!.validate()) {
       try {
         await prov.sendReason(context, reason, file);
         if (!mounted) return;
@@ -67,10 +58,11 @@ class _AbsentPageState extends State<AbsentPage> {
         showSnackBar(context, "Pengajuan izin telah dikirim");
       } catch (e) {
         if (!mounted) return;
-        showSnackBar(context, e.toString());
+
+        showSnackBar(context, 'Unggah Bukti Izin');
       }
     } else {
-      return showSnackBar(context, "Unggah bukti izin");
+      return showSnackBar(context, "Isi Alasan & Unggah Bukti Izin");
     }
   }
 
@@ -141,8 +133,10 @@ class _AbsentPageState extends State<AbsentPage> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 150,
-                decoration: BoxDecoration(border: Border.all(color: blue)),
-                child: (imageReason == null)
+                decoration: BoxDecoration(
+                    border: Border.all(color: blue),
+                    borderRadius: BorderRadius.circular(8)),
+                child: (_imageReason == null)
                     ? InkWell(
                         onTap: _uploadReason,
                         child: Column(
@@ -162,23 +156,18 @@ class _AbsentPageState extends State<AbsentPage> {
                       )
                     : InkWell(
                         onTap: () {
+                          print("jalan");
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               contentPadding: EdgeInsets.zero,
-                              content: Image.network(
-                                imageReason ?? '',
-                              ),
+                              content: showImage(context),
                             ),
                           );
                         },
-                        child: Image.network(
-                          imageReason ?? '',
-                          width: MediaQuery.of(context).size.width,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                        child: showImage(context)),
               ),
               SizedBox(
                 height: 15,
@@ -211,5 +200,22 @@ class _AbsentPageState extends State<AbsentPage> {
         },
       ),
     );
+  }
+
+  Widget showImage(BuildContext context) {
+    if (_imageReason!.contains('http')) {
+      return BorderNetworkImage(
+        _imageReason ?? '',
+        fit: BoxFit.cover,
+        marginSize: 0,
+      );
+    } else {
+      return Image.file(
+        File(_imageReason ?? ''),
+        width: MediaQuery.of(context).size.width,
+        height: 150,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }

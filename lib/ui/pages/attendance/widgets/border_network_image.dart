@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 
 class BorderNetworkImage extends StatelessWidget {
   final String url;
+  final BoxFit fit;
+  final double marginSize;
 
-  BorderNetworkImage(this.url);
+  BorderNetworkImage(this.url,
+      {this.fit = BoxFit.contain, this.marginSize = 50});
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +18,13 @@ class BorderNetworkImage extends StatelessWidget {
         return Container(
           width: width(context),
           height: 300,
-          margin: EdgeInsets.all(24),
+          margin: EdgeInsets.all(marginSize),
           decoration: BoxDecoration(
             color: Colors.black87,
             borderRadius: BorderRadius.circular(8),
             image: DecorationImage(
               image: image,
-              fit: BoxFit.contain,
+              fit: fit,
             ),
           ),
         );

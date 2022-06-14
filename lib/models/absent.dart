@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Absent {
-  String? id, name, userId, reason, imageReason;
+  String? id, name, userId, reason;
+  String? imageReason;
   DateTime? date;
 
   Absent(
