@@ -83,9 +83,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextFormField(
                     controller: _cName,
                     textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.words,
                     validator: (value) {
                       if (value!.isEmpty) return 'Field ini harus diisi';
-
                       return null;
                     },
                   ),

@@ -110,6 +110,7 @@ class _AbsentPageState extends State<AbsentPage> {
                 controller: _cReason,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.done,
+                textCapitalization: TextCapitalization.sentences,
                 readOnly: widget.argument?.reason != null ? true : false,
                 maxLines: 8,
                 onChanged: (value) => _formKey.currentState!.validate(),

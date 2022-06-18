@@ -6,6 +6,7 @@ import 'package:attendance/services/utils.dart';
 import 'package:attendance/ui/widgets/container_shadow.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
 import 'package:attendance/ui/widgets/empty.dart';
+import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/refresh_view.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,64 @@ class _AdminHomePageState extends State<AdminHomePage> {
     setState(() {});
   }
 
+  void _showDialogConfirm(User user) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        contentPadding: EdgeInsets.all(16),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Apakah Anda yakin ingin menghapus data ${user.name} ?',
+              style: poppinsBlackw400.copyWith(fontSize: 14),
+            ),
+            SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => _delete(user.id),
+                    child: Text('Ya'),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      primary: red,
+                      side: BorderSide(color: red),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Tidak'),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _delete(String? id) async {
+    final prov = Provider.of<UserProvider>(context, listen: false);
+    showLoadingDialog(context);
+    try {
+      final result = await prov.delete(id);
+      if (!mounted) return;
+      Navigator.pop(context);
+      if (result.value!) {
+        showSnackBar(context, result.message!);
+        _getData();
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      showSnackBar(context, e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +156,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         showLogout: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
             Row(
@@ -175,24 +234,31 @@ class _AdminHomePageState extends State<AdminHomePage> {
                               Icon(
                                 Icons.account_circle,
                                 color: Colors.black.withOpacity(0.7),
-                                size: 50,
+                                size: 45,
                               ),
                               SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    (data.name ?? '-').capitalize(),
-                                    style:
-                                        poppinsBlackw600.copyWith(fontSize: 16),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    data.nign ?? '-',
-                                    style:
-                                        poppinsBlackw600.copyWith(fontSize: 12),
-                                  ),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      (data.name ?? '-').capitalize(),
+                                      style: poppinsBlackw600.copyWith(
+                                          fontSize: 14),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      data.nign ?? '-',
+                                      style: poppinsBlackw600.copyWith(
+                                          fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              InkWell(
+                                onTap: () => _showDialogConfirm(data),
+                                child: Icon(Icons.delete),
                               ),
                             ],
                           ),
