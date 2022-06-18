@@ -138,4 +138,14 @@ class UserProvider extends ChangeNotifier {
       throw e;
     }
   }
+
+  Future<Response<bool>> delete(String? id) async {
+    try {
+      final response =
+          await FirebaseService.delete(collection: Collection.Users, id: id);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

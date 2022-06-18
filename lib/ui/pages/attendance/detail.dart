@@ -73,7 +73,7 @@ class DetailAttendancePage extends StatelessWidget {
             argument?.locationIn ?? '',
             style: poppinsBlackw400.copyWith(fontSize: 14),
           ),
-          BorderNetworkImage(argument?.imageUrlIn ?? '-'),
+          BorderNetworkImage(url: argument?.imageUrlIn),
           SizedBox(height: 16),
           Row(
             children: [
@@ -113,7 +113,7 @@ class DetailAttendancePage extends StatelessWidget {
             argument?.locationOut ?? '',
             style: poppinsBlackw400.copyWith(fontSize: 14),
           ),
-          BorderNetworkImage(argument?.imageUrlOut ?? '-'),
+          BorderNetworkImage(url: argument?.imageUrlOut),
         ],
       ),
     );

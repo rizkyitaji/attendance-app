@@ -5,13 +5,14 @@ class Absent {
   String? imageReason;
   DateTime? date;
 
-  Absent(
-      {this.id,
-      this.name,
-      this.userId,
-      this.reason,
-      this.date,
-      this.imageReason});
+  Absent({
+    this.id,
+    this.name,
+    this.userId,
+    this.reason,
+    this.date,
+    this.imageReason,
+  });
 
   factory Absent.fromSnapshot(DocumentSnapshot snapshot) {
     final value = snapshot.data() as Map<String, dynamic>;
