@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Absent {
   String? id, name, userId, reason;
+  String? imageReason;
   DateTime? date;
 
   Absent({
@@ -10,6 +11,7 @@ class Absent {
     this.userId,
     this.reason,
     this.date,
+    this.imageReason,
   });
 
   factory Absent.fromSnapshot(DocumentSnapshot snapshot) {
@@ -22,6 +24,7 @@ class Absent {
     name = map['name'];
     userId = map['user_id'];
     reason = map['reason'];
+    imageReason = map['imageReason'];
     date = DateTime.fromMillisecondsSinceEpoch(map['date']);
   }
 
@@ -31,6 +34,7 @@ class Absent {
       'name': name,
       'user_id': userId,
       'reason': reason,
+      'imageReason': imageReason,
       'date': date?.millisecondsSinceEpoch,
     };
   }
