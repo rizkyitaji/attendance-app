@@ -7,6 +7,7 @@ import 'package:attendance/services/enums.dart';
 import 'package:attendance/services/themes.dart';
 import 'package:attendance/ui/pages/attendance/widgets/border_network_image.dart';
 import 'package:attendance/ui/widgets/custom_appbar.dart';
+import 'package:attendance/ui/widgets/loading_dialog.dart';
 import 'package:attendance/ui/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +27,7 @@ class _AbsentPageState extends State<AbsentPage> {
   final _formKey = GlobalKey<FormFieldState>();
   final _cReason = TextEditingController();
   DateTime _currentDate = DateTime.now();
+  FocusNode _reasonFocus = FocusNode();
   String? _imageReason;
 
   @override
@@ -37,19 +39,31 @@ class _AbsentPageState extends State<AbsentPage> {
       _imageReason = widget.argument?.imageReason ?? '';
   }
 
+  void _pickImage() async {
+    _reasonFocus.unfocus();
+    final imageFile = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (imageFile != null) {
+      setState(() => _imageReason = imageFile.path);
+    }
+  }
+
   void _send() async {
     final prov = Provider.of<AbsentProvider>(context, listen: false);
     final file = XFile(_imageReason ?? '');
     final reason = _cReason.text.trim();
     if (_formKey.currentState!.validate()) {
       if (_imageReason != null) {
+        showLoadingDialog(context);
         try {
           await prov.sendReason(context, reason, file);
           if (!mounted) return;
           Navigator.pop(context);
+          Navigator.pop(context);
           showSnackBar(context, "Pengajuan izin telah dikirim");
         } catch (e) {
           if (!mounted) return;
+          Navigator.pop(context);
           showSnackBar(context, e.toString());
         }
       } else {
@@ -108,12 +122,13 @@ class _AbsentPageState extends State<AbsentPage> {
                 height: 10,
               ),
               TextFormField(
-                readOnly: widget.argument!.reason != null ? true : false,
                 key: _formKey,
                 controller: _cReason,
+                focusNode: _reasonFocus,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
+                readOnly: widget.argument!.reason != null ? true : false,
                 maxLines: 8,
                 onChanged: (value) => _formKey.currentState!.validate(),
                 validator: (value) {
@@ -131,16 +146,9 @@ class _AbsentPageState extends State<AbsentPage> {
                   border: Border.all(color: blue),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: (_imageReason == null)
+                child: _imageReason == null
                     ? InkWell(
-                        onTap: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.camera);
-
-                          if (imageFile != null) {
-                            setState(() => _imageReason = imageFile.path);
-                          }
-                        },
+                        onTap: _pickImage,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -156,21 +164,7 @@ class _AbsentPageState extends State<AbsentPage> {
                           ],
                         ),
                       )
-                    : InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: EdgeInsets.zero,
-                              content: _image(),
-                            ),
-                          );
-                        },
-                        child: _image(),
-                      ),
+                    : _image(),
               ),
               SizedBox(
                 height: 15,
@@ -207,19 +201,38 @@ class _AbsentPageState extends State<AbsentPage> {
 
   Widget _image() {
     if (_imageReason!.contains('http')) {
-      return BorderNetworkImage(
-        url: _imageReason,
-        fit: BoxFit.cover,
-        margin: 0,
+      return InkWell(
+        onTap: () async {
+          await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: BorderNetworkImage(
+                url: _imageReason,
+                fit: BoxFit.cover,
+                margin: 0,
+              ),
+            ),
+          );
+        },
+        child: BorderNetworkImage(
+          url: _imageReason,
+          fit: BoxFit.cover,
+          margin: 0,
+        ),
       );
     } else {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.file(
-          File(_imageReason ?? ''),
-          width: width(context),
-          height: 150,
-          fit: BoxFit.cover,
+      return InkWell(
+        onTap: _pickImage,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            File(_imageReason ?? ''),
+            fit: BoxFit.cover,
+          ),
         ),
       );
     }
