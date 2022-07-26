@@ -15,9 +15,10 @@ class DetailAttendancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateIn =
-        argument?.dateIn != null ? argument?.dateIn?.formatMMMMddyhhmm() : '';
-    final dateOut =
-        argument?.dateOut != null ? argument?.dateOut?.formatMMMMddyhhmm() : '';
+        argument?.dateIn != null ? argument?.dateIn?.formatMMMMddyhhmm() : '-';
+    final dateOut = argument?.dateOut != null
+        ? argument?.dateOut?.formatMMMMddyhhmm()
+        : '-';
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Absensi'),

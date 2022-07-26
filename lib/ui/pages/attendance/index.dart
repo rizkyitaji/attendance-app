@@ -388,6 +388,11 @@ class _AttendancePageState extends State<AttendancePage> {
                             Text(
                               data.dateOut!.formathhmm(),
                               style: poppinsBlackw600.copyWith(fontSize: 11),
+                            )
+                          else
+                            Text(
+                              '-',
+                              style: poppinsBlackw600.copyWith(fontSize: 11),
                             ),
                         ],
                       )
@@ -430,9 +435,7 @@ class _AttendancePageState extends State<AttendancePage> {
               final prov = Provider.of<UserProvider>(context, listen: false);
               prov.nign = _nign;
               Navigator.pushNamed(context, absentRoute, arguments: data)
-                  .then((_) {
-                return _getAbsents();
-              });
+                  .then((_) => _getAbsents());
             },
             padding: EdgeInsets.all(12),
             child: Row(
@@ -450,6 +453,11 @@ class _AttendancePageState extends State<AttendancePage> {
                       if (data.date != null)
                         Text(
                           data.date!.formathhmm(),
+                          style: poppinsBlackw600.copyWith(fontSize: 11),
+                        )
+                      else
+                        Text(
+                          '-',
                           style: poppinsBlackw600.copyWith(fontSize: 11),
                         ),
                     ],

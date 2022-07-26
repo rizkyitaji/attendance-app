@@ -32,8 +32,10 @@ class AbsentProvider extends ChangeNotifier {
       final snapshot = response.value;
       if (snapshot!.exists) {
         _absent = Absent.fromSnapshot(snapshot);
-        notifyListeners();
+      } else {
+        _absent = null;
       }
+      notifyListeners();
     } catch (e) {
       throw e;
     }
