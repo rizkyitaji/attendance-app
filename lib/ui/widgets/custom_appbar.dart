@@ -37,7 +37,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: Padding(
         padding: EdgeInsets.symmetric(vertical: 12),
-        child: Image.asset(iconLogo),
+        child: Image.asset(
+          iconLogoCircle,
+          fit: BoxFit.cover,
+        ),
       ),
       title: Text((title ?? '').toUpperCase()),
       actions: [

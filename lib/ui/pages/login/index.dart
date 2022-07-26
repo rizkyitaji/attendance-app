@@ -61,12 +61,12 @@ class _LoginPageState extends State<LoginPage> {
                     Image.asset(iconLogo, height: 140),
                     SizedBox(height: 40),
                     Text(
-                      'SISTEM ABSENSI GURU',
+                      'SISTEM ABSENSI DOSEN',
                       textAlign: TextAlign.center,
                       style: poppinsBlackw600.copyWith(fontSize: 25),
                     ),
                     Text(
-                      'SDN SUKAKERTA 03',
+                      'FAKULTAS TEKNIK\nUNIVERSITAS PELITA BANGSA',
                       textAlign: TextAlign.center,
                       style: poppinsBlackw400.copyWith(fontSize: 20),
                     ),
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        labelText: 'NIGN',
+                        labelText: 'NIDN',
                       ),
                     ),
                     SizedBox(height: 24),

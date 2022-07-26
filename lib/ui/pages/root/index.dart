@@ -28,14 +28,14 @@ class RootPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(iconLogo, height: 140),
-                SizedBox(height: 32),
+                Image.asset(iconLogoCircle, height: 180),
+                SizedBox(height: 20),
                 Text(
-                  'SISTEM ABSENSI GURU',
+                  'SISTEM ABSENSI DOSEN',
                   style: poppinsWhitew600.copyWith(fontSize: 25),
                 ),
                 Text(
-                  'SDN SUKAKERTA 03',
+                  'FAKULTAS TEKNIK UNIVERSITAS PELITA BANGSA',
                   textAlign: TextAlign.center,
                   style: poppinsWhitew300.copyWith(fontSize: 20),
                 ),

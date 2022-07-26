@@ -152,7 +152,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Daftar Guru',
+        title: 'Daftar Dosen',
         showLogout: true,
       ),
       body: Padding(
@@ -168,7 +168,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     style: poppinsBlackw400.copyWith(fontSize: 14),
                     onChanged: _onSearch,
                     decoration: InputDecoration(
-                      hintText: 'Cari Guru',
+                      hintText: 'Cari Dosen',
                       suffixIcon: Icon(
                         Icons.search,
                         color: blue,

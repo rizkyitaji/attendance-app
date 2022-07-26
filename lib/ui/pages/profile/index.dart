@@ -93,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 15,
                   ),
                   Text(
-                    "NIGN",
+                    "NIDN",
                     style: poppinsBluew500.copyWith(fontSize: 15),
                   ),
                   SizedBox(

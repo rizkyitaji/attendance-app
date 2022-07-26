@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
    
     <application
-        android:label="Sistem Absensi SDN Sukakerta 03"
+        android:label="Sistem Absensi Dosen Fakultas Teknik Universitas Pelita Bangsa"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
