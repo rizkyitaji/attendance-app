@@ -225,7 +225,6 @@ class _AbsentPageState extends State<AbsentPage> {
         ),
       );
     } else {
-<<<<<<< HEAD
       return ClipRRect(
         borderRadius: BorderRadius.circular(7.4),
         child: Image.file(
@@ -233,16 +232,6 @@ class _AbsentPageState extends State<AbsentPage> {
           width: width(context),
           height: 150,
           fit: BoxFit.cover,
-=======
-      return InkWell(
-        onTap: _pickImage,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.file(
-            File(_imageReason ?? ''),
-            fit: BoxFit.cover,
-          ),
->>>>>>> 7b135c93019896495bf7c2171a8515d125375fb1
         ),
       );
     }
