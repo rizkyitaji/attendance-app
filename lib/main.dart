@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 10),
               minimumSize: Size(120, 40),
-              primary: blue,
+              backgroundColor: blue,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 10),
               minimumSize: Size(120, 40),
-              primary: blue,
+              foregroundColor: blue,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),

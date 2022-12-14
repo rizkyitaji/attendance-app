@@ -115,7 +115,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 Expanded(
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      primary: red,
+                      foregroundColor: red,
                       side: BorderSide(color: red),
                     ),
                     onPressed: () => Navigator.pop(context),
